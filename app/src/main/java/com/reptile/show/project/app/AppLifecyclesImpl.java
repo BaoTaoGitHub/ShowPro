@@ -19,7 +19,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.jess.arms.base.delegate.AppLifecycles;
-import com.reptile.show.project.BuildConfig;
+//import com.reptile.show.project.BuildConfig;
 
 import androidx.annotation.NonNull;
 import butterknife.ButterKnife;
@@ -43,7 +43,8 @@ public class AppLifecyclesImpl implements AppLifecycles {
 
     @Override
     public void onCreate(@NonNull Application application) {
-        if (BuildConfig.LOG_DEBUG) {//Timber初始化
+        //TODO 没有找到BuildConfig
+//        if (BuildConfig.LOG_DEBUG) {//Timber初始化
             //Timber 是一个日志框架容器,外部使用统一的Api,内部可以动态的切换成任何日志框架(打印策略)进行日志打印
             //并且支持添加多个日志框架(打印策略),做到外部调用一次 Api,内部却可以做到同时使用多个策略
             //比如添加三个策略,一个打印日志,一个将日志保存本地,一个将日志上传服务器
@@ -57,7 +58,7 @@ public class AppLifecyclesImpl implements AppLifecycles {
 //                        }
 //                    });
             ButterKnife.setDebug(true);
-        }
+//        }
         //LeakCanary v2.0+ 版本会自动完成框架的初始化, 以及对 Activity#onDestroy、Fragment#onDestroy、Fragment#onDestroyView 的监听
         //原理和 AndroidAutoSize 一致, 所以注释掉下面 v1.0 的初始化代码
         //使用 IntelligentCache.KEY_KEEP 作为 key 的前缀, 可以使储存的数据永久存储在内存中

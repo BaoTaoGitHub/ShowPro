@@ -26,7 +26,7 @@ import com.jess.arms.di.module.GlobalConfigModule;
 import com.jess.arms.http.imageloader.glide.GlideImageLoaderStrategy;
 import com.jess.arms.http.log.RequestInterceptor;
 import com.jess.arms.integration.ConfigModule;
-import com.reptile.show.project.BuildConfig;
+//import com.reptile.show.project.BuildConfig;
 import com.reptile.show.project.mvp.model.api.Api;
 
 import java.util.List;
@@ -57,9 +57,10 @@ public final class GlobalConfiguration implements ConfigModule {
 
     @Override
     public void applyOptions(@NonNull Context context, @NonNull GlobalConfigModule.Builder builder) {
-        if (!BuildConfig.LOG_DEBUG) { //Release 时, 让框架不再打印 Http 请求和响应的信息
-            builder.printHttpLogLevel(RequestInterceptor.Level.NONE);
-        }
+//todo 没有找到buildConfig
+        //        if (!BuildConfig.LOG_DEBUG) { //Release 时, 让框架不再打印 Http 请求和响应的信息
+//            builder.printHttpLogLevel(RequestInterceptor.Level.NONE);
+//        }
 
         builder.baseurl(Api.APP_DOMAIN)
                 //强烈建议自己自定义图片加载逻辑, 因为 arms-imageloader-glide 提供的 GlideImageLoaderStrategy 并不能满足复杂的需求

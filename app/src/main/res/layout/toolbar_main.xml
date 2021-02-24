@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar_title"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    style="@style/MyToolbar"
+    app:menu="@menu/menu_toolbar_main"
+    app:popupTheme="@style/AppToolbarPopupTheme"
+    android:paddingRight="@dimen/dimen_5_dp"
+    >
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        style="@style/AppTheme.TextStyle"
+        />
+</androidx.appcompat.widget.Toolbar>

@@ -28,10 +28,10 @@ import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.http.imageloader.ImageLoader;
 import com.jess.arms.http.imageloader.glide.ImageConfigImpl;
 import com.jess.arms.utils.ArmsUtils;
+import com.reptile.show.project.R;
 import com.reptile.show.project.mvp.model.entity.User;
 
 import butterknife.BindView;
-import me.jessyan.mvparms.demo.R;
 
 /**
  * ================================================

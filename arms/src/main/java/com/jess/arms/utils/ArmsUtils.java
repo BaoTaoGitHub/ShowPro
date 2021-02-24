@@ -270,6 +270,22 @@ public class ArmsUtils {
     }
 
     /**
+     * 显示TopSnackbarText 的文本信息
+     * @param text
+     */
+    public  static void TopSnackbarText(String text){
+        AppManager.getAppManager().showTopSnackbar(text,true,false,true);
+    }
+
+    /**
+     * 显示TopSnackbarText 的文本信息
+     * @param text
+     */
+    public  static void TopSnackbarTextWindow(String text){
+        AppManager.getAppManager().showTopSnackbar(text,true,true,true);
+    }
+
+    /**
      * 通过资源id获得drawable
      *
      * @param rID

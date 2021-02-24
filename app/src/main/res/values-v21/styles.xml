@@ -1,0 +1,76 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowAnimationStyle">@style/Animation_Activity</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:windowBackground">@color/white</item>
+<!--        <item name="android:navigationBarColor"></item>设置手机系统底部金刚键背景颜色-->
+        <!--设置menu菜单不遮挡actionbar-->
+        <item name="actionOverflowMenuStyle">@style/OverflowMenu</item>
+        <item name="actionOverflowButtonStyle">@style/OverflowStyle</item>
+    </style>
+
+    <style name="OverflowStyle">
+        <item name="android:src">@mipmap/ico_toolbar_more</item>
+    </style>
+
+    <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <!--兼容Api 21之前的版本 -->
+        <item name="overlapAnchor">false</item>
+        <!-- Api 21-->
+        <item name="android:overlapAnchor">false</item>
+    </style>
+
+    <style name="Animation_Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/translate_right_to_center</item>
+        <item name="android:activityOpenExitAnimation">@anim/translate_center_to_left</item>
+        <item name="android:activityCloseEnterAnimation">@anim/translate_left_to_center</item>
+        <item name="android:activityCloseExitAnimation">@anim/translate_center_to_right</item>
+    </style>
+
+    <style name="MyToolbar">
+        <item name="android:background">@color/white</item>
+        <item name="layout_scrollFlags">scroll|enterAlways</item>
+<!--        <item name="titleTextColor">@color/black</item>&lt;!&ndash;设置标题字体颜色&ndash;&gt;-->
+<!--        <item name="subtitleTextColor">@color/black</item>&lt;!&ndash;设置副标题字体颜色&ndash;&gt;-->
+        <item name="titleTextAppearance">@style/AppTheme.ToolbarTitleTextStyle</item>
+        <item name="showAsAction">never</item><!--设置菜单的显示方式 never 不在toolbar中显示，一直在溢出菜单显示-->
+        <item name="elevation">@dimen/dimen_0_5_dp</item>
+    </style>
+
+    <!--定义ToolBar上Title的文字样式-->
+    <style name="AppTheme.ToolbarTitleTextStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">@dimen/dimen_14_sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+<!--    普通字体-->
+    <style name="AppTheme.TextStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">@dimen/dimen_14_sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+<!--    标题字体-->
+    <style name="AppTheme.TitleTextStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">@dimen/dimen_16_sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+<!--副标题字体-->
+    <style name="AppTheme.SubTitleTextStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">@dimen/dimen_12_sp</item>
+        <item name="android:textColor">@color/grey_subtitle</item>
+    </style>
+
+    <style name="AppToolbarPopupTheme" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:dropDownListViewStyle">@style/AppDropDownListViewStyle</item>
+    </style>
+
+    <style name="AppDropDownListViewStyle" parent="Widget.AppCompat.ListView.DropDown">
+        <item name="android:showDividers">middle</item>
+        <item name="android:divider">@android:drawable/screen_background_dark_transparent</item>
+        <item name="android:dividerHeight">@dimen/dimen_1_dp</item>
+    </style>
+</resources>

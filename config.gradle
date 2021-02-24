@@ -30,6 +30,7 @@ ext {
             "cardview-v7"              : "com.android.support:cardview-v7:${version["androidSupportSdkVersion"]}",
             "support-annotations"      : "com.android.support:support-annotations:${version["androidSupportSdkVersion"]}",
             "recyclerview-v7"          : "com.android.support:recyclerview-v7:${version["androidSupportSdkVersion"]}",
+            "":"",
 
             //androidx
             "appcompat"                : "androidx.appcompat:appcompat:${version["androidXSdkVersion"]}",

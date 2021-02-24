@@ -21,6 +21,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -32,6 +34,8 @@ import com.jess.arms.integration.lifecycle.FragmentLifecycleable;
 import com.jess.arms.mvp.IPresenter;
 import com.jess.arms.utils.ArmsUtils;
 import com.trello.rxlifecycle2.android.FragmentEvent;
+
+import java.util.PrimitiveIterator;
 
 import javax.inject.Inject;
 
@@ -56,6 +60,9 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     protected final String TAG = this.getClass().getSimpleName();
     private final BehaviorSubject<FragmentEvent> mLifecycleSubject = BehaviorSubject.create();
     protected Context mContext;
+    private OnBackPressedDispatcher dispatcher;
+    private OnBackPressedCallback callback;
+
     @Inject
     @Nullable
     protected P mPresenter;//如果当前页面逻辑简单, Presenter 可以为 null
@@ -81,6 +88,32 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        dispatcher = requireActivity().getOnBackPressedDispatcher();
+        callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                /*
+                    手动触发返回监听
+                    注意: 这里必须先把callback置为disable,否则会造成:死循环调用
+                    因为:
+                    dispatch.onBackPrssed()里面,会遍历所有的 OnBackPressedCallback
+                    发现有enable的callback会先把退出事件,传递给callback执行
+                    callback.setEnabled(false);
+                    dispatcher.onBackPressed();
+                    if (callback.isEnabled()) {
+                        //拦截当前的返回操作
+                        callback.handleOnBackPressed();
+                        return;
+                    }
+                */
+            }
+        };
+        dispatcher.addCallback(this, callback);
     }
 
     @Nullable

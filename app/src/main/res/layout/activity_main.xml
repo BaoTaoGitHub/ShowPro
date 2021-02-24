@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout android:id="@+id/container"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dimen_0_dp"
+        />
+    <FrameLayout
+        android:id="@+id/fl_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/cv_bottom"
+        />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:cardElevation="@dimen/dimen_25_dp">
+
+        <RadioGroup
+            android:id="@+id/rg_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_49_dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:gravity="center"
+            >
+
+            <RadioButton
+                android:id="@+id/rb_main"
+                android:layout_width="@dimen/dimen_0_dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableTop="@drawable/sel_bottom_home"
+                android:text="@string/bottom_main"
+                android:textColor="@color/color_bottom_font"
+                android:gravity="center"
+                android:checked="true"
+                android:layout_marginTop="@dimen/dimen_2_dp"
+                />
+            <RadioButton
+                android:id="@+id/rb_add"
+                android:layout_width="@dimen/dimen_0_dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableTop="@drawable/sel_bottom_add"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/dimen_2_dp"
+                />
+
+            <RadioButton
+                android:id="@+id/rb_mine"
+                android:layout_width="@dimen/dimen_0_dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableTop="@drawable/sel_bottom_mine"
+                android:text="@string/bottom_mine"
+                android:textColor="@color/color_bottom_font"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/dimen_2_dp"
+                />
+
+        </RadioGroup>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<!--    <item-->
+<!--        android:id="@+id/ceshi"-->
+<!--        android:title="我是测试"-->
+<!--        app:showAsAction="always"-->
+<!--        android:icon="@mipmap/ic_launcher"-->
+<!--        />-->
+    <group
+        android:id="@+id/gp_editor"
+        >
+        <item
+            android:id="@+id/menu_batch_editor"
+            android:title="@string/toolbar_menu_batch_editor"
+            app:showAsAction="never"
+            />
+        <item
+            android:id="@+id/menu_new_folder"
+            android:title="@string/toolbar_menu_new_folder"
+            app:showAsAction="never"
+            />
+    </group>
+
+    <group
+        android:id="@+id/gp_sort"
+        android:checkableBehavior="single"
+        >
+        <item
+            android:id="@+id/menu_sort_modify_time"
+            android:title="@string/toolbar_menu_sort_modify_time"
+            app:showAsAction="never"
+            android:icon="@mipmap/ic_launcher"
+            />
+        <item
+            android:id="@+id/menu_sort_create_time"
+            android:title="@string/toolbar_menu_sort_create_time"
+            app:showAsAction="never"
+            />
+        <item
+            android:id="@+id/menu_sort_name"
+            android:title="@string/toolbar_menu_sort_name"
+            app:showAsAction="never"
+            />
+    </group>
+</menu>

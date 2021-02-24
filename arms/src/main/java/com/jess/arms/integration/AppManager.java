@@ -22,18 +22,23 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.View;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.jess.arms.base.delegate.AppLifecycles;
 import com.jess.arms.utils.ArmsUtils;
+import com.jess.arms.widget.topsnackbar.TopSnackbar;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
@@ -139,6 +144,7 @@ public final class AppManager {
 
     /**
      * 让在前台的 {@link Activity}, 使用 {@link Snackbar} 显示文本内容
+     * 底部弹出
      *
      * @param message
      * @param isLong
@@ -162,6 +168,74 @@ public final class AppManager {
             }
         }).subscribeOn(AndroidSchedulers.mainThread()).subscribe();
 
+    }
+
+    /**
+     * 在自定义布局的头/下部弹出
+     *
+     * @param message
+     * @param isLong
+     * @param isTop
+     */
+    public void showTopSnackbar(String message,View parent ,boolean isLong,boolean isTop) {
+        Completable.fromAction(() -> {
+            TopSnackbar.make(parent, message, isLong ? 6000 : 2000, isTop ? Gravity.TOP : Gravity.BOTTOM)
+                    .show();
+
+        }).subscribeOn(AndroidSchedulers.mainThread()).subscribe();
+    }
+
+    /**
+     * 在父布局的头/下部弹出
+     *
+     * @param message
+     * @param isLong
+     * @param isTop
+     */
+    public void showTopSnackbar(String message,boolean isWindow ,boolean isLong,boolean isTop) {
+        if (getCurrentActivity() == null && getTopActivity() == null) {
+            Timber.tag(TAG).w("mCurrentActivity == null when showSnackbar(String,boolean)");
+            return;
+        }
+        Completable.fromAction(() -> {
+            Activity activity = getCurrentActivity() == null ? getTopActivity() : getCurrentActivity();
+            View view;
+            if(isWindow){
+                view = activity.getWindow().getDecorView();
+            }else {
+                view = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+            }
+            TopSnackbar.make(view, message, isLong ? 6000 : 2000, isTop ? Gravity.TOP : Gravity.BOTTOM)
+                    .show();
+
+        }).subscribeOn(AndroidSchedulers.mainThread()).subscribe();
+    }
+    /**
+     * 在父布局的头/下部弹出,并设置字体与背景颜色
+     *
+     * @param message
+     * @param isLong
+     * @param isTop
+     */
+    public void showTopSnackbar(String message,boolean isWindow,boolean isLong,boolean isTop,
+                                @ColorInt int messageColor,@ColorInt int backgroundColor) {
+        if (getCurrentActivity() == null && getTopActivity() == null) {
+            Timber.tag(TAG).w("mCurrentActivity == null when showSnackbar(String,boolean)");
+            return;
+        }
+        Completable.fromAction(() -> {
+            Activity activity = getCurrentActivity() == null ? getTopActivity() : getCurrentActivity();
+            View view;
+            if(isWindow){
+                view = activity.getWindow().getDecorView();
+            }else {
+                view = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+            }
+            TopSnackbar.make(view, message, isLong ? 6000 : 2000, isTop ? Gravity.TOP : Gravity.BOTTOM)
+                    .setTopSnackbarColor(messageColor,backgroundColor)
+                    .show();
+
+        }).subscribeOn(AndroidSchedulers.mainThread()).subscribe();
     }
 
     /**

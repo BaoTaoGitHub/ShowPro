@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3FA862</color>
-    <color name="colorPrimaryDark">#3FA862</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#5799f1</color>
+    <color name="colorPrimaryDark">#1867D1</color>
+    <color name="colorAccent">#5799f1</color>
+    <color name="colorFont">#1C1C1C</color>
+
+    <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="grey">#B1B1B1</color>
+    <!--横线颜色-->
+    <color name="grey_line">#E3E3E3</color>
+    <!--副标题小字体颜色-->
+    <color name="grey_subtitle">#B6B6B6</color>
+<!--    首页搜索字体颜色-->
+    <color name="grey_search">#AEAFB3</color>
+<!--   首页搜索背景颜色-->
+    <color name="grey_search_background">#fff5f6fa</color>
 </resources>

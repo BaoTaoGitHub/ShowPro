@@ -21,11 +21,11 @@ import androidx.annotation.NonNull;
 
 import com.jess.arms.base.BaseHolder;
 import com.jess.arms.base.DefaultAdapter;
+import com.reptile.show.project.R;
 import com.reptile.show.project.mvp.model.entity.User;
 
 import java.util.List;
 
-import me.jessyan.mvparms.demo.R;
 
 import com.reptile.show.project.mvp.ui.holder.UserItemHolder;
 
