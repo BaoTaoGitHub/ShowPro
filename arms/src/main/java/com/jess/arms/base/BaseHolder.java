@@ -32,14 +32,17 @@ import com.zhy.autolayout.utils.AutoUtils;
  * <a href="https://github.com/JessYanCoding">Follow me</a>
  * ================================================
  */
-public abstract class BaseHolder<T> extends RecyclerView.ViewHolder implements View.OnClickListener {
+public abstract class BaseHolder<T> extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
     protected final String TAG = this.getClass().getSimpleName();
     protected OnViewClickListener mOnViewClickListener = null;
+    protected OnViewLongClickListener mOnViewLongClickListener = null;
 
     public BaseHolder(View itemView) {
         super(itemView);
         //点击事件
         itemView.setOnClickListener(this);
+        //长按事件
+        itemView.setOnLongClickListener(this);
         //屏幕适配
         if (ThirdViewUtil.isUseAutolayout()) {
             AutoUtils.autoSize(itemView);
@@ -67,14 +70,39 @@ public abstract class BaseHolder<T> extends RecyclerView.ViewHolder implements V
     @Override
     public void onClick(View view) {
         if (mOnViewClickListener != null) {
-            mOnViewClickListener.onViewClick(view, this.getPosition());
+            //使用getAdapterPosition时，尽可能的使用notifyItemInserted(0)来更新数据
+            int position = this.getAdapterPosition();
+            if(position!=-1){
+                mOnViewClickListener.onViewClick(view, position);
+            }
         }
+    }
+
+    /**
+     * 长按事件监听
+     * @param view
+     * @return true 只执行长按事件
+     *          false 执行完长按事件之后还执行单击事件
+     */
+    @Override
+    public boolean onLongClick(View view) {
+        if (mOnViewLongClickListener != null) {
+            //使用getAdapterPosition时，尽可能的使用notifyItemInserted(0)来更新数据
+            int position = this.getAdapterPosition();
+            if(position!=-1){
+                mOnViewLongClickListener.onViewLongClick(view, position);
+            }
+        }
+        return true;
     }
 
     public void setOnItemClickListener(OnViewClickListener listener) {
         this.mOnViewClickListener = listener;
     }
 
+    public void setOnItemLongClickListener(OnViewLongClickListener listener){
+        this.mOnViewLongClickListener = listener;
+    }
     /**
      * item 点击事件
      */
@@ -87,5 +115,9 @@ public abstract class BaseHolder<T> extends RecyclerView.ViewHolder implements V
          * @param position 在 RecyclerView 中的位置
          */
         void onViewClick(View view, int position);
+    }
+
+    public interface OnViewLongClickListener{
+        void onViewLongClick(View view,int position);
     }
 }

@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.TypedArray;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -37,6 +38,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -213,6 +215,41 @@ public class DeviceUtils {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    /**
+     * 获取标题栏的高度
+     * @param context
+     * @return 返回px
+     */
+    public static int getActionBarHeight(Context context){
+        int actionBarHeight = 0;
+        TypedValue tv = new TypedValue();
+        if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            try {
+                //方法一
+                actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
+            }catch (Exception e){
+                try {
+                    //方法二
+                    int[] attribute = new int[] { android.R.attr.actionBarSize };
+                    TypedArray array = context.obtainStyledAttributes(tv.resourceId, attribute);
+                    actionBarHeight = array.getDimensionPixelSize(0 /* index */, -1 /* default size */);
+                    array.recycle();
+                }catch (Exception e2){
+                    try {
+                        //方法三
+                        TypedArray actionbarSizeTypedArray = context.obtainStyledAttributes(new int[] { android.R.attr.actionBarSize });
+                        //四舍五入取整数
+                        actionBarHeight = Math.round(actionbarSizeTypedArray.getDimension(0, 0));
+                        actionbarSizeTypedArray.recycle();
+                    }catch (Exception e3){
+
+                    }
+                }
+            }
+        }
+        return actionBarHeight;
     }
 
     public static boolean hasBigScreen(Context context) {

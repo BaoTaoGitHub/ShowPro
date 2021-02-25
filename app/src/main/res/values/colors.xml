@@ -16,4 +16,8 @@
     <color name="grey_search">#AEAFB3</color>
 <!--   首页搜索背景颜色-->
     <color name="grey_search_background">#fff5f6fa</color>
+<!--    布局按压颜色-->
+    <color name="grey_press">#E3E3E3</color>
+<!--    布局选择颜色-->
+    <color name="grey_check">#E6F0FD</color>
 </resources>

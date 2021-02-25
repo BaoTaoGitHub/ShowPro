@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_folder"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/dimen_35_dp"
     android:clickable="true"
+    android:background="@drawable/sel_home_listitem"
     >
-
     <TextView
         android:id="@+id/tv_title"
         style="@style/AppTheme.TitleTextStyle"
@@ -23,13 +24,16 @@
         android:layout_marginTop="@dimen/dimen_8_dp"
         android:paddingLeft="@dimen/dimen_10_dp" />
 
-    <ImageView
+    <CheckBox
+        android:id="@+id/cb_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/dimen_10_dp"
-        android:src="@mipmap/ico_item_circle" />
+        android:layout_marginRight="@dimen/dimen_20_dp"
+        android:button="@drawable/sel_home_listitem_check"
+        android:background="@null"
+        />
 
     <View
         android:layout_width="match_parent"

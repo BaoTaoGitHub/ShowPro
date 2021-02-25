@@ -38,6 +38,7 @@ import java.util.List;
 public abstract class DefaultAdapter<T> extends RecyclerView.Adapter<BaseHolder<T>> {
     protected List<T> mInfos;
     protected OnRecyclerViewItemClickListener mOnItemClickListener = null;
+    protected onRecycleViewItemLongClickLisrtener mOnItemLongClickListener = null;
 
     public DefaultAdapter(List<T> infos) {
         super();
@@ -79,6 +80,13 @@ public abstract class DefaultAdapter<T> extends RecyclerView.Adapter<BaseHolder<
             if (mOnItemClickListener != null && mInfos.size() > 0) {
                 //noinspection unchecked
                 mOnItemClickListener.onItemClick(view1, viewType, mInfos.get(position), position);
+            }
+        });
+        //设置Item的长按事件
+        mHolder.setOnItemLongClickListener((view1, position) -> {
+            if (mOnItemLongClickListener != null && mInfos.size() > 0) {
+                //noinspection unchecked
+                mOnItemLongClickListener.onItemLongClick(view1, viewType, mInfos.get(position), position);
             }
         });
         return mHolder;
@@ -151,6 +159,10 @@ public abstract class DefaultAdapter<T> extends RecyclerView.Adapter<BaseHolder<
         this.mOnItemClickListener = listener;
     }
 
+    public void setmOnItemLongClickListener(onRecycleViewItemLongClickLisrtener listener){
+        this.mOnItemLongClickListener = listener;
+    }
+
     /**
      * item 点击事件
      *
@@ -167,5 +179,20 @@ public abstract class DefaultAdapter<T> extends RecyclerView.Adapter<BaseHolder<
          * @param position 在 RecyclerView 中的位置
          */
         void onItemClick(@NonNull View view, int viewType, @NonNull T data, int position);
+    }
+
+    /**
+     * Item长按事件监听
+     * @param <T>
+     */
+    public interface onRecycleViewItemLongClickLisrtener<T>{
+        /**
+         * item长按返回
+         * @param view
+         * @param viewType
+         * @param data
+         * @param position
+         */
+        void onItemLongClick(@NonNull View view,int viewType,@NonNull T data,int position);
     }
 }

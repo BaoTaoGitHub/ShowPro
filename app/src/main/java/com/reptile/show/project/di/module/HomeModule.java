@@ -34,14 +34,8 @@ public abstract class HomeModule {
 
     @FragmentScope
     @Provides
-    static DefaultAdapter.OnRecyclerViewItemClickListener provideItemListener(HomeContract.View view){
-        return view.getItemListener();
-    }
-
-    @FragmentScope
-    @Provides
-    static RecyclerView.Adapter provideHomeAdapter(List<FolderEntity> list,DefaultAdapter.OnRecyclerViewItemClickListener listener){
-        return new HomeAdapter(list,listener);
+    static HomeAdapter provideHomeAdapter(List<FolderEntity> list){
+        return new HomeAdapter(list);
     }
 
     @Binds

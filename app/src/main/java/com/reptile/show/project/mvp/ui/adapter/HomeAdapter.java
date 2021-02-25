@@ -17,11 +17,8 @@ import javax.inject.Inject;
 
 public class HomeAdapter extends DefaultAdapter<FolderEntity> {
 
-    public HomeAdapter(List<FolderEntity> infos,@NonNull OnRecyclerViewItemClickListener listener) {
+    public HomeAdapter(List<FolderEntity> infos) {
         super(infos);
-        if(listener!=null){
-            setOnItemClickListener(listener);
-        }
     }
 
     @NonNull
