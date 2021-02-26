@@ -28,6 +28,8 @@
         android:id="@+id/cb_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minHeight="@dimen/dimen_14_dp"
+        android:minWidth="@dimen/dimen_14_dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/dimen_20_dp"

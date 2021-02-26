@@ -5,20 +5,34 @@
     android:background="@color/white"
     >
     <TextView
-        android:id="@+id/tv_popup_cancle"
+        android:id="@+id/tv_popup_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="取消"
+        android:text="@string/cancel"
         android:layout_centerVertical="true"
-        android:paddingLeft="@dimen/dimen_10_dp"
+        android:padding="@dimen/dimen_5_dp"
+        android:layout_marginLeft="@dimen/dimen_10_dp"
         android:layout_alignParentLeft="true"
+        style="@style/AppTheme.NormalTextStyle"
         />
+
     <TextView
+        android:id="@+id/tv_popup_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="全选"
+        style="@style/AppTheme.TitleTextStyle"
+        android:layout_centerInParent="true"
+        />
+
+    <TextView
+        android:id="@+id/tv_popup_select_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_all"
         android:layout_centerVertical="true"
-        android:paddingRight="@dimen/dimen_10_dp"
+        android:padding="@dimen/dimen_5_dp"
+        android:layout_marginRight="@dimen/dimen_10_dp"
         android:layout_alignParentRight="true"
+        style="@style/AppTheme.NormalTextStyle"
         />
 </RelativeLayout>

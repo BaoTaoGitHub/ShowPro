@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rg_popup_bottom"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dimen_49_dp"
+    android:background="@color/blue_text"
+    android:orientation="horizontal">
+
+    <RadioButton
+        android:id="@+id/rb_popup_new_folder"
+        android:layout_width="@dimen/dimen_0_dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dimen_2_dp"
+        android:layout_weight="1"
+        android:button="@null"
+        android:checked="true"
+        android:drawableTop="@mipmap/ico_popup_new_folder"
+        android:gravity="center"
+        android:text="@string/toolbar_menu_new_folder"
+        android:textColor="@color/white"
+        android:textSize="@dimen/dimen_12_sp" />
+
+    <RadioButton
+        android:id="@+id/rb_popup_move"
+        android:layout_width="@dimen/dimen_0_dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dimen_2_dp"
+        android:layout_weight="1"
+        android:button="@null"
+        android:checked="true"
+        android:drawableTop="@mipmap/ico_popup_move"
+        android:gravity="center"
+        android:text="@string/move"
+        android:textColor="@color/white"
+        android:textSize="@dimen/dimen_12_sp" />
+
+    <RadioButton
+        android:id="@+id/rb_popup_rename"
+        android:layout_width="@dimen/dimen_0_dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dimen_2_dp"
+        android:layout_weight="1"
+        android:button="@null"
+        android:checked="true"
+        android:drawableTop="@mipmap/ico_popup_rename"
+        android:gravity="center"
+        android:text="@string/rename"
+        android:textColor="@color/white"
+        android:textSize="@dimen/dimen_12_sp" />
+
+    <RadioButton
+        android:id="@+id/rb_popup_remove"
+        android:layout_width="@dimen/dimen_0_dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dimen_2_dp"
+        android:layout_weight="1"
+        android:button="@null"
+        android:checked="true"
+        android:drawableTop="@mipmap/ico_popup_remove"
+        android:gravity="center"
+        android:text="@string/remove"
+        android:textColor="@color/white"
+        android:textSize="@dimen/dimen_12_sp" />
+</RadioGroup>

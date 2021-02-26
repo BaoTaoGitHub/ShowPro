@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -37,6 +38,7 @@ import com.reptile.show.project.mvp.contract.HomeContract;
 import com.reptile.show.project.mvp.model.entity.FolderEntity;
 import com.reptile.show.project.mvp.presenter.HomePresenter;
 import com.reptile.show.project.mvp.ui.activity.MainActivity;
+import com.reptile.show.project.mvp.ui.activity.SearchActivity;
 import com.reptile.show.project.mvp.ui.adapter.HomeAdapter;
 
 import java.util.ArrayList;
@@ -46,14 +48,21 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
-public class HomeFragment extends BaseFragment<HomePresenter> implements HomeContract.View, DefaultAdapter.OnRecyclerViewItemClickListener, DefaultAdapter.onRecycleViewItemLongClickLisrtener {
+public class HomeFragment extends BaseFragment<HomePresenter> implements HomeContract.View
+        , DefaultAdapter.OnRecyclerViewItemClickListener
+        , DefaultAdapter.onRecycleViewItemLongClickLisrtener {
+    @BindView(R.id.linear_home)
+    LinearLayout mLinear_home;
     @BindView(R.id.toolbar_title)
     Toolbar mToolbar_title;
     @BindView(R.id.tv_title)
     TextView mTv_title;
     @BindView(R.id.recycle_list)
     RecyclerView mRecycle_list;
+    @BindView(R.id.ll_search)
+    LinearLayout mLl_search;
 
     @Inject
     HomeAdapter mAdapter;
@@ -152,7 +161,16 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
     public void killMyself() {
         isCheckModel = null;
         mChoice = null;
+        mTv_popup_title = null;
         ((MainActivity) getActivity()).killMyself();
+    }
+
+    /**
+     * 点击搜索布局监听
+     */
+    @OnClick(R.id.ll_search)
+    public void onLinearSearchClick(){
+        launchActivity(new Intent(getActivity(), SearchActivity.class));
     }
 
     /**
@@ -169,10 +187,20 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
             RelativeLayout mRl_folder = (RelativeLayout) view.findViewById(R.id.rl_folder);
             mRl_folder.setActivated(!mRl_folder.isActivated());
             if (data instanceof FolderEntity) {
-                mChoice.add((FolderEntity) data);
+                FolderEntity entity = ((FolderEntity) data);
+                entity.setChecked(!mRl_folder.isActivated());
+                if(mRl_folder.isActivated()){
+                    mChoice.add(entity);
+                }else {
+                    mChoice.remove(entity);
+                }
+                mTv_popup_title.setText("已选择" + mChoice.size() + "个文件");
             }
+
         }
     }
+
+    static TextView mTv_popup_title;
 
     @Override
     public void onItemLongClick(@NonNull View view, int viewType, @NonNull Object data, int position) {
@@ -185,32 +213,66 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
             mChoice.clear();
         }
         if (data instanceof FolderEntity) {
-            mChoice.add((FolderEntity) data);
+            FolderEntity entity = (FolderEntity) data;
+            entity.setChecked(true);
+            mChoice.add(entity);
+            RelativeLayout mRl_folder = (RelativeLayout) view.findViewById(R.id.rl_folder);
+            mRl_folder.setActivated(!mRl_folder.isActivated());
+            iniChoiceLayout();
         }
-        mTv_title.setText("已选择" + mChoice.size() + "个文件");
-        RelativeLayout mRl_folder = (RelativeLayout) view.findViewById(R.id.rl_folder);
-        mRl_folder.setActivated(!mRl_folder.isActivated());
-        View pview = LayoutInflater.from(getActivity()).inflate(R.layout.popup_top_title,null);
-        SmartPopupWindow smartPopupWindow = SmartPopupWindow.Builder.build(getActivity(),pview)
+
+    }
+
+    private void iniChoiceLayout() {
+        //Top
+        View top_view = LayoutInflater.from(getActivity()).inflate(R.layout.popup_top_title, null);
+        SmartPopupWindow topPopupWindow = SmartPopupWindow.Builder.build(getActivity(), top_view)
                 .setSize(ViewGroup.LayoutParams.MATCH_PARENT, DeviceUtils.getActionBarHeight(getActivity()))
                 .setOutsideTouchDismiss(false)
                 .createPopupWindow();
-        smartPopupWindow.setFocusable(false);
-        smartPopupWindow.showAtAnchorView(mToolbar_title, VerticalPosition.ALIGN_TOP, HorizontalPosition.CENTER);
-        pview.findViewById(R.id.tv_popup_cancle).setOnClickListener(view1 -> {
+        topPopupWindow.setFocusable(false);
+        mTv_popup_title = (TextView) top_view.findViewById(R.id.tv_popup_title);
+        mTv_popup_title.setText("已选择" + mChoice.size() + "个文件");
+        //Bottom
+        View bottom_view = LayoutInflater.from(getActivity()).inflate(R.layout.popup_bottom_title, null);
+        LogUtils.debugInfo("==测试Dimen==", ArmsUtils.getDimens(getActivity(), R.dimen.dimen_49_dp) + "");
+        SmartPopupWindow bottomPopupWindow = SmartPopupWindow.Builder.build(getActivity(), bottom_view)
+                .setSize(ViewGroup.LayoutParams.MATCH_PARENT, ArmsUtils.dip2px(getActivity()
+                        , 49f))
+                .setOutsideTouchDismiss(false)
+                .createPopupWindow();
+        bottomPopupWindow.setFocusable(false);
+
+        topPopupWindow.showAtAnchorView(mToolbar_title, VerticalPosition.ALIGN_TOP, HorizontalPosition.CENTER);
+        bottomPopupWindow.showAtAnchorView(mLinear_home, VerticalPosition.BELOW, HorizontalPosition.CENTER);
+        RadioGroup mRg_popup_bottom = (RadioGroup) bottom_view.findViewById(R.id.rg_popup_bottom);
+        mRg_popup_bottom.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.rb_popup_new_folder:
+                    showMessage("点击新建文件夹");
+                    break;
+                case R.id.rb_popup_move:
+                    showMessage("点击移动");
+                    break;
+                case R.id.rb_popup_rename:
+                    showMessage("点击重命名");
+                    break;
+                case R.id.rb_popup_remove:
+                    showMessage("点击删除");
+                    break;
+            }
+        });
+        //Top的按钮事件
+        top_view.findViewById(R.id.tv_popup_cancel).setOnClickListener(view1 -> {
+            mAdapter.itemSelectAll(false);
             mAdapter.notifyDataSetChanged();
             isCheckModel = false;
-            smartPopupWindow.dismiss();
+            topPopupWindow.dismiss();
+            bottomPopupWindow.dismiss();
         });
-//        CustomPopupWindow.builder().contentView(CustomPopupWindow
-//                .inflateView(getActivity(),R.layout.popup_top_title))
-//                .parentView(mToolbar_title)
-//                .isWrap(true)
-//                .backgroundDrawable(getResources().getDrawable(R.color.black))
-//                .customListener(contentView -> {
-//                    LogUtils.debugInfo(TAG,"CustomPopupWindow初始化中");
-//                })
-//                .build()
-//                .show();
+        top_view.findViewById(R.id.tv_popup_select_all).setOnClickListener(v -> {
+            mAdapter.itemSelectAll(true);
+            mAdapter.notifyDataSetChanged();
+        });
     }
 }

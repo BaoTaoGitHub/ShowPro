@@ -31,4 +31,16 @@ public class HomeAdapter extends DefaultAdapter<FolderEntity> {
     public int getLayoutId(int viewType) {
         return R.layout.list_home;
     }
+
+    /**
+     * 全选/反选
+     * @param isSelectAll
+     */
+    public void itemSelectAll(boolean isSelectAll){
+        for (int i = 0; i < getItemCount(); i++) {
+            if(getItem(i).isChecked() != isSelectAll){
+                getItem(i).setChecked(isSelectAll);
+            }
+        }
+    }
 }

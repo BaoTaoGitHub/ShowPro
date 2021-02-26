@@ -6,6 +6,7 @@ package com.reptile.show.project.mvp.model.entity;
 public class FolderEntity {
     private final String title;
     private final String subtitle;
+    private boolean isChecked;
 
     public FolderEntity(String title, String subtitle) {
         this.title = title;
@@ -20,11 +21,20 @@ public class FolderEntity {
         return subtitle;
     }
 
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
     @Override
     public String toString() {
         return "FolderEntity{" +
                 "title='" + title + '\'' +
                 ", subtitle='" + subtitle + '\'' +
+                ", isChecked=" + isChecked +
                 '}';
     }
 }

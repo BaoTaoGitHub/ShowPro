@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_search_activity_fragment"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        >
+
+        <LinearLayout
+            android:id="@+id/ll_shape_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_search_white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dimen_12_dp"
+            android:layout_toLeftOf="@+id/tv_cancel"
+            android:layout_marginRight="@dimen/dimen_20_dp"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ico_search" />
+
+            <EditText
+                android:id="@+id/ed_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="@string/search"
+                android:paddingLeft="@dimen/dimen_5_dp"
+                android:paddingRight="@dimen/dimen_5_dp"
+                android:textColor="@color/grey_search"
+                android:textSize="@dimen/dimen_14_sp"
+                android:paddingTop="@dimen/dimen_8_dp"
+                android:paddingBottom="@dimen/dimen_8_dp"
+                />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            style="@style/AppTheme.TitleTextStyle"
+            android:padding="@dimen/dimen_5_dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            />
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/ll_search_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/may_find"
+            />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_search_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_58_dp"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            >
+            <TextView
+                android:id="@+id/tv_collect_files"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/collect_files"
+                style="@style/AppTheme.NormalSmallTextStyle"
+                android:layout_gravity="center"
+                />
+        </FrameLayout>
+
+        <View
+            android:id="@+id/view_vertical"
+            android:layout_width="@dimen/dimen_0_5_dp"
+            android:layout_height="@dimen/dimen_10_dp"
+            android:background="@color/grey_vertical_line"
+            />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            >
+            <TextView
+                android:id="@+id/tv_document_notes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/document_notes"
+                style="@style/AppTheme.NormalSmallTextStyle"
+                android:layout_gravity="center"
+                />
+        </FrameLayout>
+    </LinearLayout>
+
+</LinearLayout>

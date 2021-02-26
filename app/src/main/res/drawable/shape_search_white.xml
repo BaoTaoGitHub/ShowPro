@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle"
+    >
+    <!--渐变填充-->
+<!--    <gradient-->
+<!--        android:endColor="#3bf8fffd"-->
+<!--        android:startColor="#fff3fefc"-->
+<!--        android:type="linear"-->
+<!--        android:angle="135"-->
+<!--        android:useLevel="true" />-->
+<!--    单色填充-->
+    <solid android:color="@color/white"/>
+
+    <corners
+        android:topLeftRadius="@dimen/dimen_50_dp"
+        android:topRightRadius="@dimen/dimen_50_dp"
+        android:bottomLeftRadius="@dimen/dimen_50_dp"
+        android:bottomRightRadius="@dimen/dimen_50_dp"
+        />
+
+</shape>

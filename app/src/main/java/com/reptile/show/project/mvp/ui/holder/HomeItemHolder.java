@@ -1,6 +1,7 @@
 package com.reptile.show.project.mvp.ui.holder;
 
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,9 @@ public class HomeItemHolder extends BaseHolder<FolderEntity> {
     TextView mTv_title;
     @BindView(R.id.tv_subtitle)
     TextView mTv_subtitle;
+    @BindView(R.id.rl_folder)
+    RelativeLayout mRl_folder;
+
     //可以初始化一些用到的工具类
     public HomeItemHolder(View itemView) {
         super(itemView);
@@ -24,6 +28,7 @@ public class HomeItemHolder extends BaseHolder<FolderEntity> {
     @Override
     public void setData(@NonNull FolderEntity data, int position) {
         mTv_title.setText(data.getTitle());
-        mTv_subtitle.setText(data.getSubtitle()+"个内容");
+        mTv_subtitle.setText(data.getSubtitle() + "个内容");
+        mRl_folder.setActivated(data.isChecked());
     }
 }

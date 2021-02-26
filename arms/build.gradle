@@ -26,6 +26,7 @@ android {
 }
 
 dependencies {
+    api rootProject.ext.dependencies["constraintlayout"]
     api(rootProject.ext.dependencies["legacy-support-v4"]) {
         exclude module: 'annotation'
         exclude module: 'coordinatorlayout'

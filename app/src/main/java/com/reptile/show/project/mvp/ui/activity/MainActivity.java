@@ -148,15 +148,16 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         switch (checkedId) {
             case R.id.rb_main:
                 mReplace = 0;
+                FragmentUtils.hideAllShowFragment(mFragments.get(mReplace));
                 break;
             case R.id.rb_add:
-                mReplace = 0;
+                //TODO 弹出底部弹窗
                 break;
             case R.id.rb_mine:
                 mReplace = 1;
+                FragmentUtils.hideAllShowFragment(mFragments.get(mReplace));
                 break;
         }
-        FragmentUtils.hideAllShowFragment(mFragments.get(mReplace));
     }
 
 

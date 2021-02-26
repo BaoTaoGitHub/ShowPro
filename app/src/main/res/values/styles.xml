@@ -54,15 +54,27 @@
         <item name="android:textSize">@dimen/dimen_14_sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
-    <!--    标题字体-->
+    <!--    标题黑字体-->
     <style name="AppTheme.TitleTextStyle" parent="Widget.AppCompat.TextView">
         <item name="android:textSize">@dimen/dimen_16_sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
-    <!--副标题字体-->
+    <!--副标题灰字体-->
     <style name="AppTheme.SubTitleTextStyle" parent="Widget.AppCompat.TextView">
         <item name="android:textSize">@dimen/dimen_12_sp</item>
         <item name="android:textColor">@color/grey_subtitle</item>
+    </style>
+
+    <!--普通蓝字体-->
+    <style name="AppTheme.NormalTextStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">@dimen/dimen_16_sp</item>
+        <item name="android:textColor">@color/blue_text</item>
+    </style>
+
+    <!--普通蓝小字体-->
+    <style name="AppTheme.NormalSmallTextStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">@dimen/dimen_12_sp</item>
+        <item name="android:textColor">@color/blue_text</item>
     </style>
 
     <style name="AppToolbarPopupTheme" parent="Widget.AppCompat.PopupMenu.Overflow">
