@@ -64,6 +64,8 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
     @BindView(R.id.ll_search)
     LinearLayout mLl_search;
 
+    static TextView mTv_popup_title;
+
     @Inject
     HomeAdapter mAdapter;
     @Inject
@@ -200,7 +202,6 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
         }
     }
 
-    static TextView mTv_popup_title;
 
     @Override
     public void onItemLongClick(@NonNull View view, int viewType, @NonNull Object data, int position) {
