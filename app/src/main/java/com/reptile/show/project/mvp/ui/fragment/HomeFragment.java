@@ -3,14 +3,10 @@ package com.reptile.show.project.mvp.ui.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,12 +23,10 @@ import com.jess.arms.utils.ArmsUtils;
 import com.jess.arms.utils.DeviceUtils;
 import com.jess.arms.utils.LogUtils;
 import com.jess.arms.utils.Preconditions;
-import com.jess.arms.widget.CustomPopupWindow;
 import com.jess.arms.widget.smartpopupwindow.HorizontalPosition;
 import com.jess.arms.widget.smartpopupwindow.SmartPopupWindow;
 import com.jess.arms.widget.smartpopupwindow.VerticalPosition;
 import com.reptile.show.project.R;
-import com.reptile.show.project.app.AppConstants;
 import com.reptile.show.project.di.component.DaggerHomeComponent;
 import com.reptile.show.project.mvp.contract.HomeContract;
 import com.reptile.show.project.mvp.model.entity.FolderEntity;
@@ -41,9 +35,7 @@ import com.reptile.show.project.mvp.ui.activity.MainActivity;
 import com.reptile.show.project.mvp.ui.activity.SearchActivity;
 import com.reptile.show.project.mvp.ui.adapter.HomeAdapter;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -98,7 +90,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
 
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
-        iniRecycleView();
+        iniRecyclerView();
         mTv_title.setText(ArmsUtils.getString(getActivity(), R.string.bottom_main));
         mToolbar_title.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -125,7 +117,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
         mPresenter.getRecycleData();
     }
 
-    private void iniRecycleView() {
+    private void iniRecyclerView() {
         ArmsUtils.configRecyclerView(mRecycle_list, mLayoutManager);
         mRecycle_list.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(this);

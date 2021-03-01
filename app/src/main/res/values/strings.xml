@@ -13,7 +13,7 @@
     <string name="move">移动</string>
     <string name="rename">重命名</string>
     <string name="remove">删除</string>
-    <string name="may_find">您可能想找</string>
+    <string name="may_find">您可能想找:</string>
     <string name="collect_files">收藏文件</string>
     <string name="document_notes">文档笔记</string>
 </resources>

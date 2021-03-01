@@ -51,7 +51,6 @@ public class HomePresenter extends BasePresenter<HomeContract.Model, HomeContrac
             mFolderList.add(entity);
         }
         mAdapter.notifyItemInserted(0);
-//        mAdapter.notifyDataSetChanged();
     }
 
     //此处一般为退出HomeFragment时调用

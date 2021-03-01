@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/dimen_10_dp"
+        android:paddingRight="@dimen/dimen_10_dp"
         android:paddingTop="@dimen/dimen_20_dp"
         >
 
@@ -32,19 +33,20 @@
                 android:layout_height="wrap_content"
                 android:src="@mipmap/ico_search" />
 
-            <EditText
+            <com.jess.arms.widget.ClearableEditText
                 android:id="@+id/ed_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:hint="@string/search"
                 android:paddingLeft="@dimen/dimen_5_dp"
-                android:paddingRight="@dimen/dimen_5_dp"
+                android:paddingRight="@dimen/dimen_12_dp"
                 android:textColor="@color/grey_search"
                 android:textSize="@dimen/dimen_14_sp"
                 android:paddingTop="@dimen/dimen_8_dp"
                 android:paddingBottom="@dimen/dimen_8_dp"
                 android:imeOptions="actionSearch"
+                android:singleLine="true"
                 />
         </LinearLayout>
         <TextView
@@ -53,6 +55,7 @@
             android:layout_height="wrap_content"
             android:text="@string/cancel"
             style="@style/AppTheme.TitleTextStyle"
+            android:clickable="true"
             android:padding="@dimen/dimen_5_dp"
             android:layout_marginTop="@dimen/dimen_20_dp"
             android:layout_alignParentRight="true"
@@ -64,6 +67,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:paddingLeft="@dimen/dimen_10_dp"
+        android:paddingRight="@dimen/dimen_10_dp"
         android:visibility="gone"
         >
         <TextView
@@ -84,7 +89,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/dimen_58_dp"
         android:orientation="horizontal"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         >
 
         <FrameLayout
@@ -100,6 +105,7 @@
                 style="@style/AppTheme.NormalSmallTextStyle"
                 android:layout_gravity="center"
                 android:padding="@dimen/dimen_5_dp"
+                android:clickable="true"
                 />
         </FrameLayout>
 
@@ -123,6 +129,7 @@
                 style="@style/AppTheme.NormalSmallTextStyle"
                 android:layout_gravity="center"
                 android:padding="@dimen/dimen_5_dp"
+                android:clickable="true"
                 />
         </FrameLayout>
     </LinearLayout>

@@ -8,8 +8,13 @@ import androidx.lifecycle.OnLifecycleEvent;
 import com.jess.arms.di.scope.ActivityScope;
 import com.jess.arms.integration.AppManager;
 import com.jess.arms.mvp.BasePresenter;
+import com.jess.arms.utils.ArmsUtils;
+import com.jess.arms.utils.DeviceUtils;
 import com.reptile.show.project.mvp.contract.MainContract;
 import com.reptile.show.project.mvp.contract.SearchContract;
+import com.reptile.show.project.mvp.ui.adapter.SearchAdapter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -23,6 +28,11 @@ public class SearchPresenter extends BasePresenter<SearchContract.Model,SearchCo
     AppManager mAppManager;
     @Inject
     Application mApplication;
+
+    @Inject
+    List<String> mLists;
+    @Inject
+    SearchAdapter mAdapter;
 
     @Inject
     public SearchPresenter(SearchContract.Model model, SearchContract.View rootView) {
@@ -39,6 +49,12 @@ public class SearchPresenter extends BasePresenter<SearchContract.Model,SearchCo
     public void onStart() {
         super.onStart();
 
+    }
+
+    public void getSearchResult(){
+        mLists.clear();
+        mLists.addAll(mModel.getSearchData());
+        mAdapter.notifyDataSetChanged();
     }
 
     //此处一般为退出此Activity时调用

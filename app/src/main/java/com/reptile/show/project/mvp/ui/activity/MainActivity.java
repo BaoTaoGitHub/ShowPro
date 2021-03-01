@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RadioGroup;
 
@@ -15,11 +17,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.utils.ArmsUtils;
 import com.jess.arms.utils.FragmentUtils;
+import com.jess.arms.widget.smartpopupwindow.SmartPopupWindow;
 import com.reptile.show.project.R;
 import com.reptile.show.project.app.AppConstants;
 import com.reptile.show.project.di.component.DaggerMainComponent;
@@ -43,7 +48,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     FrameLayout mFl_content;
     @BindView(R.id.rg_bottom)
     RadioGroup mRg_bottom;
-
 
     @Inject
     RxPermissions rxPermissions;
@@ -185,5 +189,18 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         super.onDestroy();
         this.rxPermissions = null;
         this.mFragments = null;
+    }
+
+    private void showPopupAdd(){
+        View bottomView = LayoutInflater.from(this).inflate(R.layout.popup_bottom_add,null);
+        RecyclerView mRv_popup_add = (RecyclerView)bottomView.findViewById(R.id.rv_popup_add);
+        ArmsUtils.configRecyclerView(mRv_popup_add,new GridLayoutManager(this,4));
+
+        mRv_popup_add.setAdapter();
+        SmartPopupWindow bottomPopupWindow = SmartPopupWindow.Builder.build(getActivity(), bottomView)
+                .setSize(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                .setOutsideTouchDismiss(true)
+                .createPopupWindow();
+        bottomPopupWindow.setFocusable(false);
     }
 }
