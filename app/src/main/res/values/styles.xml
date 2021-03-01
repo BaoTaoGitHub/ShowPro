@@ -59,6 +59,16 @@
         <item name="android:textSize">@dimen/dimen_16_sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
+    <!--    标题黑大字体-->
+    <style name="AppTheme.TitleTextBigStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">@dimen/dimen_18_sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <!--标题灰字体-->
+    <style name="AppTheme.TitleTextGreyStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">@dimen/dimen_16_sp</item>
+        <item name="android:textColor">@color/grey_vertical_line</item>
+    </style>
     <!--副标题灰字体-->
     <style name="AppTheme.SubTitleTextStyle" parent="Widget.AppCompat.TextView">
         <item name="android:textSize">@dimen/dimen_12_sp</item>
