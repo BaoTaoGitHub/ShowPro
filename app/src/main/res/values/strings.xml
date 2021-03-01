@@ -16,4 +16,11 @@
     <string name="may_find">您可能想找</string>
     <string name="collect_files">收藏文件</string>
     <string name="document_notes">文档笔记</string>
+    <string name="login_user_register">新用户注册</string>
+    <string name="login_button">登录</string>
+    <string name="login_phone">手机号</string>
+    <string name="login_password">密码</string>
+    <string name="login_input_phone">请输入您的手机号码</string>
+    <string name="login_input_password">请输入密码</string>
+    <string name="register_and_login">注册并登录</string>
 </resources>

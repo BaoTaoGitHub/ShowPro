@@ -26,4 +26,9 @@
     <color name="grey_search_activity_fragment">#F6F6F6</color>
 <!--    竖线背景颜色-->
     <color name="grey_vertical_line">#999999</color>
+<!--    登录界面输入框线条颜色-->
+    <color name="grey_edittext_line">#CCCCCC</color>
+<!--    登录按钮默认颜色-->
+    <color name="blue_login">#3B6ECE</color>
+    <color name="blue_login_click">#73A1F8</color>
 </resources>
