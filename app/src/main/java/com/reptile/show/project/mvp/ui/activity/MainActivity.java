@@ -10,7 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,12 +26,16 @@ import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.utils.ArmsUtils;
 import com.jess.arms.utils.FragmentUtils;
+import com.jess.arms.widget.smartpopupwindow.HorizontalPosition;
 import com.jess.arms.widget.smartpopupwindow.SmartPopupWindow;
+import com.jess.arms.widget.smartpopupwindow.VerticalPosition;
 import com.reptile.show.project.R;
 import com.reptile.show.project.app.AppConstants;
 import com.reptile.show.project.di.component.DaggerMainComponent;
 import com.reptile.show.project.mvp.contract.MainContract;
+import com.reptile.show.project.mvp.model.entity.PopupAddEntity;
 import com.reptile.show.project.mvp.presenter.MainPresenter;
+import com.reptile.show.project.mvp.ui.adapter.PopupAddAdapter;
 import com.reptile.show.project.mvp.ui.fragment.HomeFragment;
 import com.reptile.show.project.mvp.ui.fragment.MineFragment;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -40,14 +46,19 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 import static com.jess.arms.utils.Preconditions.checkNotNull;
 
 public class MainActivity extends BaseActivity<MainPresenter> implements MainContract.View, RadioGroup.OnCheckedChangeListener {
+    @BindView(R.id.rl_parent)
+    RelativeLayout mRl_parent;
     @BindView(R.id.fl_content)
     FrameLayout mFl_content;
     @BindView(R.id.rg_bottom)
     RadioGroup mRg_bottom;
+    @BindView(R.id.rb_add)
+    RadioButton mRb_add;
 
     @Inject
     RxPermissions rxPermissions;
@@ -156,12 +167,18 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
                 break;
             case R.id.rb_add:
                 //TODO 弹出底部弹窗
+                showPopupAdd();
                 break;
             case R.id.rb_mine:
                 mReplace = 1;
                 FragmentUtils.hideAllShowFragment(mFragments.get(mReplace));
                 break;
         }
+    }
+
+    @OnClick(R.id.rb_add)
+    public void onClick(){
+        showPopupAdd();
     }
 
 
@@ -190,17 +207,25 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         this.rxPermissions = null;
         this.mFragments = null;
     }
-
+    private final int[] mDrawables = new int[]{R.mipmap.ico_popup_add_links,R.mipmap.ico_popup_add_new};
+    private final String[] mDrawableNames = new String[]{"链接收藏","新建笔记"};
     private void showPopupAdd(){
         View bottomView = LayoutInflater.from(this).inflate(R.layout.popup_bottom_add,null);
         RecyclerView mRv_popup_add = (RecyclerView)bottomView.findViewById(R.id.rv_popup_add);
         ArmsUtils.configRecyclerView(mRv_popup_add,new GridLayoutManager(this,4));
-
-        mRv_popup_add.setAdapter();
+        List<PopupAddEntity> entities = new ArrayList<>();
+        PopupAddAdapter pAdapter = new PopupAddAdapter(entities);
+        mRv_popup_add.setAdapter(pAdapter);
+        for (int i = 0;i<mDrawables.length;i++) {
+            entities.add(new PopupAddEntity(mDrawableNames[i],ArmsUtils.getDrawablebyResource(this,mDrawables[i])));
+        }
+        pAdapter.notifyDataSetChanged();
         SmartPopupWindow bottomPopupWindow = SmartPopupWindow.Builder.build(getActivity(), bottomView)
-                .setSize(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                .setAlpha(0.4f)
+                .setSize(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)
                 .setOutsideTouchDismiss(true)
                 .createPopupWindow();
         bottomPopupWindow.setFocusable(false);
+        bottomPopupWindow.showAtAnchorView(mRl_parent, VerticalPosition.BELOW, HorizontalPosition.CENTER);
     }
 }

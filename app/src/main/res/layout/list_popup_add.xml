@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     >
     <RadioButton
+        android:id="@+id/rb_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        
+        android:padding="@dimen/dimen_5_dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="@dimen/dimen_12_sp"
+        android:textColor="@color/black"
+        android:button="@null"
+        android:background="@drawable/sel_home_listitem"
+        android:drawablePadding="@dimen/dimen_8_dp"
+        android:paddingTop="@dimen/dimen_10_dp"
+        android:paddingBottom="@dimen/dimen_10_dp"
+        android:paddingLeft="@dimen/dimen_10_dp"
+        android:paddingRight="@dimen/dimen_10_dp"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,6 +9,7 @@ import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.di.scope.ActivityScope;
 import com.jess.arms.utils.ArmsUtils;
 import com.jess.arms.utils.Preconditions;
+import com.reptile.show.project.R;
 import com.reptile.show.project.di.component.DaggerLoginComponent;
 import com.reptile.show.project.mvp.contract.LoginContract;
 import com.reptile.show.project.mvp.presenter.LoginPresenter;
@@ -36,7 +37,7 @@ public class RegisterActivity extends BaseActivity<LoginPresenter> implements Lo
 
     @Override
     public int initView(@Nullable Bundle savedInstanceState) {
-        return 0;
+        return R.layout.activity_register;
     }
 
     @Override

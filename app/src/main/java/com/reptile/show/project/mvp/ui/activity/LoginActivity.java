@@ -32,13 +32,13 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     RxPermissions mRxPermissions;
 
     @BindView(R.id.et_login_phone)
-    private EditText mEt_login_phone;
+    EditText mEt_login_phone;
     @BindView(R.id.et_login_pwd)
-    private EditText mEt_login_pwd;
+    EditText mEt_login_pwd;
     @BindView(R.id.bt_login)
-    private Button mBt_login;
+    Button mBt_login;
     @BindView(R.id.tv_login_register)
-    private TextView mTv_login_register;
+    TextView mTv_login_register;
 
 
     @Override
@@ -66,6 +66,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         switch (v.getId()){
             case R.id.bt_login:
                 launchActivity(new Intent(this,MainActivity.class));
+                killMyself();
                 break;
             case R.id.tv_login_register:
                 launchActivity(new Intent(this,RegisterActivity.class));

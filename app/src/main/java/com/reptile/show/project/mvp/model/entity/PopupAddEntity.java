@@ -1,12 +1,14 @@
 package com.reptile.show.project.mvp.model.entity;
 
+import android.graphics.drawable.Drawable;
+
 import javax.annotation.Resource;
 
 public class PopupAddEntity {
      private final String title;
-     private final int icon;
+     private final Drawable icon;
 
-    public PopupAddEntity(String title, int icon) {
+    public PopupAddEntity(String title, Drawable icon) {
         this.title = title;
         this.icon = icon;
     }
@@ -15,7 +17,7 @@ public class PopupAddEntity {
         return title;
     }
 
-    public int getIcon() {
+    public Drawable getIcon() {
         return icon;
     }
 
