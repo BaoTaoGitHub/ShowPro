@@ -68,6 +68,7 @@ public class RegisterActivity extends BaseActivity<LoginPresenter> implements Lo
                 if(mAppManager.activityClassIsLive(LoginActivity.class)){
                     mAppManager.killActivity(LoginActivity.class);
                 }
+                launchActivity(new Intent(this,MainActivity.class));
                 killMyself();
                 break;
         }

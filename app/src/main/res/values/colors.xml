@@ -31,4 +31,5 @@
 <!--    登录按钮默认颜色-->
     <color name="blue_login">#3B6ECE</color>
     <color name="blue_login_click">#73A1F8</color>
+
 </resources>
