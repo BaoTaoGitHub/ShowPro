@@ -1,36 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/toolbar"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:background="?attr/colorPrimary"
-    app:contentInsetStart="0dp"
-    tools:ignore="ContentDescription">
-
-    <RelativeLayout
-        android:id="@+id/toolbar_back"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="start">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:src="@mipmap/ic_arrow_back_white_24dp" />
-    </RelativeLayout>
-
+    android:layout_height="?android:actionBarSize"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:paddingLeft="@dimen/dimen_10_dp"
+    >
     <TextView
-        android:id="@+id/toolbar_title"
+        android:id="@+id/tv_title_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        tools:text="@string/app_name" />
-
-</androidx.appcompat.widget.Toolbar>
+        android:text="@string/cancel"
+        android:padding="@dimen/dimen_5_dp"
+        style="@style/AppTheme.TextStyle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:clickable="true"
+        />
+    <TextView
+        android:id="@+id/tv_title_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/AppTheme.TitleTextStyle"
+        android:padding="@dimen/dimen_5_dp"
+        />
+    <TextView
+        android:id="@+id/tv_title_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/AppTheme.TitleTextStyle"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:clickable="true"
+        android:padding="@dimen/dimen_5_dp"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

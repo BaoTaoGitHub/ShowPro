@@ -3,10 +3,13 @@ package com.reptile.show.project.mvp.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.di.scope.ActivityScope;
+import com.jess.arms.integration.AppManager;
 import com.jess.arms.utils.ArmsUtils;
 import com.jess.arms.utils.Preconditions;
 import com.reptile.show.project.R;
@@ -19,11 +22,18 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import butterknife.BindView;
+import butterknife.OnClick;
 
 @ActivityScope
 public class RegisterActivity extends BaseActivity<LoginPresenter> implements LoginContract.View {
     @Inject
     RxPermissions mRxPermissions;
+    @Inject
+    AppManager mAppManager;
+
+    @BindView(R.id.tv_title_left)
+    TextView mTv_title_left;
 
     @Override
     public void setupActivityComponent(@NonNull AppComponent appComponent) {
@@ -43,6 +53,24 @@ public class RegisterActivity extends BaseActivity<LoginPresenter> implements Lo
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
 
+    }
+
+    @OnClick({R.id.tv_title_left,R.id.tv_register_code,R.id.bt_register})
+    public void onClick(View v){
+        switch (v.getId()){
+            case R.id.tv_title_left:
+                killMyself();
+                break;
+            case R.id.tv_register_code://验证码
+
+                break;
+            case R.id.bt_register://注册并登录
+                if(mAppManager.activityClassIsLive(LoginActivity.class)){
+                    mAppManager.killActivity(LoginActivity.class);
+                }
+                killMyself();
+                break;
+        }
     }
 
     @Override
