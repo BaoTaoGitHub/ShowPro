@@ -15,10 +15,14 @@
  */
 package com.reptile.show.project.mvp.model.api.service;
 
-import com.reptile.show.project.mvp.model.entity.StatusEntity;
 
+import com.reptile.show.project.mvp.model.entity.BaseResponse;
 
 import io.reactivex.Observable;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -32,8 +36,12 @@ import retrofit2.http.Query;
  * ================================================
  */
 public interface CommonService {
+    String Header = "Content-Type: application/json";
+    String Header2 = "Accept: application/json";
     //获取注册验证码
+    @FormUrlEncoded
+//    @Headers({Header,Header2})
     @POST("/api/user/register/code")
-    Observable<StatusEntity> getVerCode(@Query("phone") String phone);
+    Observable<BaseResponse<String>> getVerCode(@Field("phone") String phone);
 
 }

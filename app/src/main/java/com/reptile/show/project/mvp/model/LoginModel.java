@@ -5,12 +5,13 @@ import com.jess.arms.integration.IRepositoryManager;
 import com.jess.arms.mvp.BaseModel;
 import com.reptile.show.project.mvp.contract.LoginContract;
 import com.reptile.show.project.mvp.model.api.service.CommonService;
-import com.reptile.show.project.mvp.model.entity.StatusEntity;
+import com.reptile.show.project.mvp.model.api.service.LoginService;
+import com.reptile.show.project.mvp.model.entity.BaseResponse;
+import com.reptile.show.project.mvp.model.entity.LoginEntity;
 
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.functions.Function;
 
 @ActivityScope
 public class LoginModel extends BaseModel implements LoginContract.Model {
@@ -21,15 +22,17 @@ public class LoginModel extends BaseModel implements LoginContract.Model {
     }
 
     @Override
-    public Observable<StatusEntity> getVerCode(String phone) {
-//        return Observable.just(mRepositoryManager
-//        .obtainRetrofitService(CommonService.class).getVerCode(phone)
-//                .flatMap(Function));
-        return null;
+    public Observable<BaseResponse<String>> getVerCode(String phone) {
+        return mRepositoryManager.obtainRetrofitService(CommonService.class).getVerCode(phone);
     }
 
     @Override
-    public Observable<StatusEntity> register(String phone, String pwd, String code) {
-        return null;
+    public Observable<BaseResponse<String>> register(String phone, String pwd, String code) {
+        return mRepositoryManager.obtainRetrofitService(LoginService.class).register(phone,pwd,code);
+    }
+
+    @Override
+    public Observable<BaseResponse<LoginEntity>> login(String phone, String pwd) {
+        return mRepositoryManager.obtainRetrofitService(LoginService.class).login(phone,pwd);
     }
 }

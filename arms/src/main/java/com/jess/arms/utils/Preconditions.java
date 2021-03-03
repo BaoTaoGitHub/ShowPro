@@ -17,6 +17,8 @@ package com.jess.arms.utils;
 
 import androidx.annotation.Nullable;
 
+import com.google.gson.internal.bind.SqlDateTypeAdapter;
+
 /**
  * ================================================
  * Created by JessYan on 26/09/2016 13:59
@@ -175,5 +177,37 @@ public final class Preconditions {
         }
 
         return builder.toString();
+    }
+
+    public static boolean checkString(String str){
+        if(str==null || "".equals(str)){
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean checkString(String str,String msg){
+        if(str==null || "".equals(str)){
+            ArmsUtils.TopSnackbarText(msg);
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean checkPhone(String phone){
+        if(checkString(phone) && phone.length()==11){
+
+            return true;
+        }
+        ArmsUtils.TopSnackbarText("请输入正确的手机号");
+        return false;
+    }
+
+    public static boolean checkPwd(String pwd){
+        if(checkString(pwd) && pwd.length()>=6 && pwd.length()<=12){
+            return true;
+        }
+        ArmsUtils.TopSnackbarText("请输入6-12位的密码");
+        return false;
     }
 }

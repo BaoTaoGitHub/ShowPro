@@ -28,12 +28,11 @@
 
         <EditText
             android:id="@+id/et_register_phone"
-            style="@style/AppTheme.TitleTextGreyStyle"
+            style="@style/AppTheme.PhoneStyle"
             android:layout_width="@dimen/dimen_0_dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_25_dp"
             android:background="@null"
-            android:hint="@string/login_input_phone"
             android:paddingTop="@dimen/dimen_15_dp"
             android:paddingBottom="@dimen/dimen_15_dp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -56,12 +55,11 @@
 
         <EditText
             android:id="@+id/et_register_pwd"
-            style="@style/AppTheme.TitleTextGreyStyle"
+            style="@style/AppTheme.PasswordStyle"
             android:layout_width="@dimen/dimen_0_dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_12_dp"
             android:background="@null"
-            android:hint="@string/login_input_password"
             android:paddingTop="@dimen/dimen_15_dp"
             android:paddingBottom="@dimen/dimen_15_dp"
             app:layout_constraintLeft_toLeftOf="parent"

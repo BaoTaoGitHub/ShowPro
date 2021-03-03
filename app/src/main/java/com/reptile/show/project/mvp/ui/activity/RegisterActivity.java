@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.jess.arms.base.BaseActivity;
@@ -12,11 +13,15 @@ import com.jess.arms.di.scope.ActivityScope;
 import com.jess.arms.integration.AppManager;
 import com.jess.arms.mvp.IView;
 import com.jess.arms.utils.ArmsUtils;
+import com.jess.arms.utils.DataHelper;
 import com.jess.arms.utils.Preconditions;
+import com.jess.arms.utils.ProgressDialogUtils;
 import com.jess.arms.utils.RxLifecycleUtils;
 import com.reptile.show.project.R;
+import com.reptile.show.project.app.AppConstants;
 import com.reptile.show.project.di.component.DaggerLoginComponent;
 import com.reptile.show.project.mvp.contract.LoginContract;
+import com.reptile.show.project.mvp.model.entity.LoginEntity;
 import com.reptile.show.project.mvp.presenter.LoginPresenter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.RxLifecycle;
@@ -29,6 +34,7 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.OnLifecycleEvent;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Observable;
@@ -53,6 +59,16 @@ public class RegisterActivity extends BaseActivity<LoginPresenter> implements Lo
     TextView mTv_title_left;
     @BindView(R.id.tv_register_code)
     TextView mTv_register_code;
+    @BindView(R.id.et_register_phone)
+    EditText mEt_register_phone;
+    @BindView(R.id.et_register_code)
+    EditText mEt_register_code;
+    @BindView(R.id.et_register_pwd)
+    EditText mEt_register_pwd;
+
+    private String mPhone;
+    private String mPwd;
+    private String mVerCode;
 
     @Override
     public void setupActivityComponent(@NonNull AppComponent appComponent) {
@@ -81,19 +97,26 @@ public class RegisterActivity extends BaseActivity<LoginPresenter> implements Lo
                 killMyself();
                 break;
             case R.id.tv_register_code://验证码
-                CodeCountdown();
+                mPhone = mEt_register_phone.getText().toString();
+                if(Preconditions.checkPhone(mPhone)){
+                    mPresenter.sendVerCode(mPhone);
+                }
                 break;
             case R.id.bt_register://注册并登录
-                if (mAppManager.activityClassIsLive(LoginActivity.class)) {
-                    mAppManager.killActivity(LoginActivity.class);
+                mPhone = mEt_register_phone.getText().toString();
+                mVerCode = mEt_register_code.getText().toString();
+                mPwd = mEt_register_pwd.getText().toString();
+                if(Preconditions.checkPhone(mPhone)
+                        &&Preconditions.checkString(mVerCode,"请输入验证码")
+                &&Preconditions.checkPwd(mPwd)){
+                    mPresenter.register(mPhone,mPwd,mVerCode);
                 }
-                launchActivity(new Intent(this, MainActivity.class));
-                killMyself();
                 break;
         }
     }
 
-    private void CodeCountdown() {
+    @Override
+    public void CodeCountdown() {
         final int count = 60;
         Observable
                 .interval(0, 1, TimeUnit.SECONDS)//设置0延迟，每隔1秒发送执行一次
@@ -102,7 +125,7 @@ public class RegisterActivity extends BaseActivity<LoginPresenter> implements Lo
                 .map(new Function<Long, Long>() {
                     @Override
                     public Long apply(Long aLong) throws Exception {
-                        return count-aLong;
+                        return count - aLong;
                     }
                 })
                 .doOnSubscribe(disposable -> {
@@ -119,7 +142,7 @@ public class RegisterActivity extends BaseActivity<LoginPresenter> implements Lo
                     @Override
                     public void onNext(Long aLong) {
                         mTv_register_code.setEnabled(false);
-                        mTv_register_code.setText("剩余时间"+aLong+"秒");
+                        mTv_register_code.setText("剩余时间" + aLong + "秒");
                     }
 
                     @Override
@@ -129,10 +152,29 @@ public class RegisterActivity extends BaseActivity<LoginPresenter> implements Lo
 
                     @Override
                     public void onComplete() {
-                        mTv_register_code.setText(ArmsUtils.getString(RegisterActivity.this,R.string.register_get_code));
+                        mTv_register_code.setText(ArmsUtils.getString(RegisterActivity.this, R.string.register_get_code));
                         mTv_register_code.setEnabled(true);
                     }
                 });
+
+    }
+
+    @Override
+    public void registerAndLogin(LoginEntity entity) {
+        Preconditions.checkNotNull(entity);
+        LoginEntity.InfoBean infoBean = entity.getInfo();
+        infoBean.setPhone(mPhone);
+        infoBean.setPwd(mPwd);
+        entity.setInfo(infoBean);
+        if (DataHelper.saveDeviceData(getActivity(), AppConstants.LOGIN_SP, entity)) {
+            if (mAppManager.activityClassIsLive(LoginActivity.class)) {
+                mAppManager.killActivity(LoginActivity.class);
+            }
+            launchActivity(new Intent(this, MainActivity.class));
+            killMyself();
+        } else {
+            showMessage("登录失败,数据存储失败");
+        }
 
     }
 
@@ -143,12 +185,17 @@ public class RegisterActivity extends BaseActivity<LoginPresenter> implements Lo
 
     @Override
     public void showLoading() {
-
+        if (progressDialogUtils == null) {
+            progressDialogUtils = ProgressDialogUtils.getInstance(this);
+            progressDialogUtils.setMessage("请稍后...");
+        }
+        progressDialogUtils.show();
     }
 
     @Override
     public void hideLoading() {
-
+        if (progressDialogUtils != null)
+            progressDialogUtils.dismiss();
     }
 
     @Override
@@ -166,8 +213,12 @@ public class RegisterActivity extends BaseActivity<LoginPresenter> implements Lo
 
     @Override
     public void killMyself() {
-        mRxPermissions = null;
         finish();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mRxPermissions = null;
+    }
 }

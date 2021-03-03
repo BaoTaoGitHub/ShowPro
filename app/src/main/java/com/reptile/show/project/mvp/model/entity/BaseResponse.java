@@ -19,6 +19,8 @@ import java.io.Serializable;
 
 import com.reptile.show.project.mvp.model.api.Api;
 
+import retrofit2.http.GET;
+
 /**
  * ================================================
  * 如果你服务器返回的数据格式固定为这种方式(这里只提供思想,服务器返回的数据格式可能不一致,可根据自家服务器返回的格式作更改)
@@ -30,20 +32,32 @@ import com.reptile.show.project.mvp.model.api.Api;
  * ================================================
  */
 public class BaseResponse<T> implements Serializable {
-    private T data;
-    private String code;
-    private String msg;
+    private T info;
+    private String ret;
+    private String desc;
 
-    public T getData() {
-        return data;
+    public T getInfo() {
+        return info;
     }
 
-    public String getCode() {
-        return code;
+    public void setInfo(T info) {
+        this.info = info;
     }
 
-    public String getMsg() {
-        return msg;
+    public String getRet() {
+        return ret;
+    }
+
+    public void setRet(String ret) {
+        this.ret = ret;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
     /**
@@ -52,6 +66,6 @@ public class BaseResponse<T> implements Serializable {
      * @return
      */
     public boolean isSuccess() {
-        return code.equals(Api.REQUEST_SUCCESS);
+        return ret.equals(Api.REQUEST_SUCCESS);
     }
 }

@@ -34,6 +34,7 @@ import com.jess.arms.integration.cache.CacheType;
 import com.jess.arms.integration.lifecycle.ActivityLifecycleable;
 import com.jess.arms.mvp.IPresenter;
 import com.jess.arms.utils.ArmsUtils;
+import com.jess.arms.utils.ProgressDialogUtils;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 
 import javax.inject.Inject;
@@ -67,6 +68,8 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
     protected P mPresenter;//如果当前页面逻辑简单, Presenter 可以为 null
     private Cache<String, Object> mCache;
     private Unbinder mUnbinder;
+
+    protected ProgressDialogUtils progressDialogUtils;
 
     @NonNull
     @Override
@@ -121,6 +124,7 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
             mPresenter.onDestroy();//释放资源
         }
         this.mPresenter = null;
+        progressDialogUtils = null;
     }
 
     /**

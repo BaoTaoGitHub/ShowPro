@@ -69,6 +69,21 @@
         <item name="android:textSize">@dimen/dimen_16_sp</item>
         <item name="android:textColor">@color/grey_vertical_line</item>
     </style>
+<!--    手机号样式-->
+    <style name="AppTheme.PhoneStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:hint">@string/login_input_phone</item>
+        <item name="android:inputType">phone</item>
+        <item name="android:textSize">@dimen/dimen_16_sp</item>
+        <item name="android:textColor">@color/grey_vertical_line</item>
+    </style>
+<!--    密码样式-->
+    <style name="AppTheme.PasswordStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">@dimen/dimen_16_sp</item>
+        <item name="android:textColor">@color/grey_vertical_line</item>
+        <item name="android:hint">@string/login_input_password</item>
+        <item name="android:inputType">textPassword</item>
+        <item name="android:maxLength">11</item>
+    </style>
     <!--副标题灰字体-->
     <style name="AppTheme.SubTitleTextStyle" parent="Widget.AppCompat.TextView">
         <item name="android:textSize">@dimen/dimen_12_sp</item>

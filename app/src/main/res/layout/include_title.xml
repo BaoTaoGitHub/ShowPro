@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:text="@string/cancel"
         android:padding="@dimen/dimen_5_dp"
-        style="@style/AppTheme.TextStyle"
+        style="@style/AppTheme.TitleTextStyle"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
