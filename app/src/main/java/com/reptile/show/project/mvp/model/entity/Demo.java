@@ -26,12 +26,12 @@ import org.jetbrains.annotations.NotNull;
  * <a href="https://github.com/JessYanCoding">Follow me</a>
  * ================================================
  */
-public class User {
+public class Demo {
     private final int id;
     private final String login;
     private final String avatar_url;
 
-    public User(int id, String login, String avatarUrl) {
+    public Demo(int id, String login, String avatarUrl) {
         this.id = id;
         this.login = login;
         this.avatar_url = avatarUrl;

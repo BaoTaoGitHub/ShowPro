@@ -15,7 +15,7 @@
  */
 package com.reptile.show.project.mvp.model.api.service;
 
-import com.reptile.show.project.mvp.model.entity.User;
+import com.reptile.show.project.mvp.model.entity.Demo;
 
 import java.util.List;
 
@@ -35,10 +35,10 @@ import retrofit2.http.Query;
  * <a href="https://github.com/JessYanCoding">Follow me</a>
  * ================================================
  */
-public interface UserService {
+public interface DemoService {
     String HEADER_API_VERSION = "Accept: application/vnd.github.v3+json";
 
     @Headers({HEADER_API_VERSION})
     @GET("/users")
-    Observable<List<User>> getUsers(@Query("since") int lastIdQueried, @Query("per_page") int perPage);
+    Observable<List<Demo>> getUsers(@Query("since") int lastIdQueried, @Query("per_page") int perPage);
 }

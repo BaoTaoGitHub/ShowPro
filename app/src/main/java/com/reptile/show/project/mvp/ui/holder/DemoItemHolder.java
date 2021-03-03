@@ -29,7 +29,7 @@ import com.jess.arms.http.imageloader.ImageLoader;
 import com.jess.arms.http.imageloader.glide.ImageConfigImpl;
 import com.jess.arms.utils.ArmsUtils;
 import com.reptile.show.project.R;
-import com.reptile.show.project.mvp.model.entity.User;
+import com.reptile.show.project.mvp.model.entity.Demo;
 
 import butterknife.BindView;
 
@@ -42,7 +42,7 @@ import butterknife.BindView;
  * <a href="https://github.com/JessYanCoding">Follow me</a>
  * ================================================
  */
-public class UserItemHolder extends BaseHolder<User> {
+public class DemoItemHolder extends BaseHolder<Demo> {
 
     @BindView(R.id.iv_avatar)
     ImageView mAvatar;
@@ -54,7 +54,7 @@ public class UserItemHolder extends BaseHolder<User> {
      */
     private ImageLoader mImageLoader;
 
-    public UserItemHolder(View itemView) {
+    public DemoItemHolder(View itemView) {
         super(itemView);
         //可以在任何可以拿到 Context 的地方, 拿到 AppComponent, 从而得到用 Dagger 管理的单例对象
         mAppComponent = ArmsUtils.obtainAppComponentFromContext(itemView.getContext());
@@ -62,7 +62,7 @@ public class UserItemHolder extends BaseHolder<User> {
     }
 
     @Override
-    public void setData(@NonNull User data, int position) {
+    public void setData(@NonNull Demo data, int position) {
         mName.setText(data.getLogin());
 
         //itemView 的 Context 就是 Activity, Glide 会自动处理并和该 Activity 的生命周期绑定

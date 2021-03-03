@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -69,6 +70,10 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
 
     private List<Fragment> mFragments;
     private double firstTime = 0;
+
+    private final int[] mDrawables = new int[]{R.mipmap.ico_popup_add_links, R.mipmap.ico_popup_add_new};
+    private final String[] mDrawableNames = new String[]{"链接收藏", "新建笔记"};
+    static SmartPopupWindow bottomPopupWindow;
 
     @Override
     public void setupActivityComponent(@NonNull AppComponent appComponent) {
@@ -162,22 +167,22 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
             case R.id.rb_main:
-                mReplace = 0;
-                FragmentUtils.hideAllShowFragment(mFragments.get(mReplace));
-                break;
-            case R.id.rb_add:
-                //TODO 弹出底部弹窗
-                showPopupAdd();
+                if (mReplace != 0) {
+                    mReplace = 0;
+                    FragmentUtils.hideAllShowFragment(mFragments.get(mReplace));
+                }
                 break;
             case R.id.rb_mine:
-                mReplace = 1;
-                FragmentUtils.hideAllShowFragment(mFragments.get(mReplace));
+                if (mReplace != 1) {
+                    mReplace = 1;
+                    FragmentUtils.hideAllShowFragment(mFragments.get(mReplace));
+                }
                 break;
         }
     }
 
     @OnClick(R.id.rb_add)
-    public void onClick(){
+    public void onClick() {
         showPopupAdd();
     }
 
@@ -206,26 +211,36 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         super.onDestroy();
         this.rxPermissions = null;
         this.mFragments = null;
+        this.bottomPopupWindow = null;
     }
-    private final int[] mDrawables = new int[]{R.mipmap.ico_popup_add_links,R.mipmap.ico_popup_add_new};
-    private final String[] mDrawableNames = new String[]{"链接收藏","新建笔记"};
-    private void showPopupAdd(){
-        View bottomView = LayoutInflater.from(this).inflate(R.layout.popup_bottom_add,null);
-        RecyclerView mRv_popup_add = (RecyclerView)bottomView.findViewById(R.id.rv_popup_add);
-        ArmsUtils.configRecyclerView(mRv_popup_add,new GridLayoutManager(this,4));
-        List<PopupAddEntity> entities = new ArrayList<>();
-        PopupAddAdapter pAdapter = new PopupAddAdapter(entities);
-        mRv_popup_add.setAdapter(pAdapter);
-        for (int i = 0;i<mDrawables.length;i++) {
-            entities.add(new PopupAddEntity(mDrawableNames[i],ArmsUtils.getDrawablebyResource(this,mDrawables[i])));
+
+    private void showPopupAdd() {
+        if (bottomPopupWindow == null) {
+            View bottomView = LayoutInflater.from(this).inflate(R.layout.popup_bottom_add, null);
+            RecyclerView mRv_popup_add = (RecyclerView) bottomView.findViewById(R.id.rv_popup_add);
+            TextView mTv_popup_cancel = (TextView) bottomView.findViewById(R.id.tv_popup_cancel);
+            ArmsUtils.configRecyclerView(mRv_popup_add, new GridLayoutManager(this, 4));
+            List<PopupAddEntity> entities = new ArrayList<>();
+            PopupAddAdapter pAdapter = new PopupAddAdapter(entities);
+            mRv_popup_add.setAdapter(pAdapter);
+            for (int i = 0; i < mDrawables.length; i++) {
+                entities.add(new PopupAddEntity(mDrawableNames[i], ArmsUtils.getDrawablebyResource(this, mDrawables[i])));
+            }
+            pAdapter.notifyDataSetChanged();
+            bottomPopupWindow = SmartPopupWindow.Builder.build(getActivity(), bottomView)
+                    .setAlpha(0.4f)
+                    .setSize(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                    .setOutsideTouchDismiss(false)
+                    .createPopupWindow();
+            bottomPopupWindow.setFocusable(true);
+            mTv_popup_cancel.setOnClickListener(view -> {
+                if (bottomPopupWindow.isShowing()) {
+                    bottomPopupWindow.dismiss();
+                }
+            });
         }
-        pAdapter.notifyDataSetChanged();
-        SmartPopupWindow bottomPopupWindow = SmartPopupWindow.Builder.build(getActivity(), bottomView)
-                .setAlpha(0.4f)
-                .setSize(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)
-                .setOutsideTouchDismiss(true)
-                .createPopupWindow();
-        bottomPopupWindow.setFocusable(false);
-        bottomPopupWindow.showAtAnchorView(mRl_parent, VerticalPosition.BELOW, HorizontalPosition.CENTER);
+        if (!bottomPopupWindow.isShowing()) {
+            bottomPopupWindow.showAtAnchorView(mRg_bottom, VerticalPosition.ALIGN_BOTTOM, HorizontalPosition.CENTER);
+        }
     }
 }

@@ -17,12 +17,12 @@ package com.reptile.show.project.di.component;
 
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.di.scope.ActivityScope;
-import com.reptile.show.project.mvp.contract.UserContract;
-import com.reptile.show.project.mvp.ui.activity.UserActivity;
+import com.reptile.show.project.mvp.contract.DemoContract;
+import com.reptile.show.project.mvp.ui.activity.DemoActivity;
 
 import dagger.BindsInstance;
 import dagger.Component;
-import com.reptile.show.project.di.module.UserModule;
+import com.reptile.show.project.di.module.DemoModule;
 
 /**
  * ================================================
@@ -35,17 +35,17 @@ import com.reptile.show.project.di.module.UserModule;
  * ================================================
  */
 @ActivityScope
-@Component(modules = UserModule.class, dependencies = AppComponent.class)
-public interface UserComponent {
-    void inject(UserActivity activity);
+@Component(modules = DemoModule.class, dependencies = AppComponent.class)
+public interface DemoComponent {
+    void inject(DemoActivity activity);
 
     @Component.Builder
     interface Builder {
         @BindsInstance
-        UserComponent.Builder view(UserContract.View view);
+        DemoComponent.Builder view(DemoContract.View view);
 
-        UserComponent.Builder appComponent(AppComponent appComponent);
+        DemoComponent.Builder appComponent(AppComponent appComponent);
 
-        UserComponent build();
+        DemoComponent build();
     }
 }

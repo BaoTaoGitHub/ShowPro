@@ -15,6 +15,13 @@
  */
 package com.reptile.show.project.mvp.model.api.service;
 
+import com.reptile.show.project.mvp.model.entity.StatusEntity;
+
+
+import io.reactivex.Observable;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
+
 /**
  * ================================================
  * 存放通用的一些 API
@@ -25,5 +32,8 @@ package com.reptile.show.project.mvp.model.api.service;
  * ================================================
  */
 public interface CommonService {
+    //获取注册验证码
+    @POST("/api/user/register/code")
+    Observable<StatusEntity> getVerCode(@Query("phone") String phone);
 
 }

@@ -23,4 +23,11 @@
     <string name="login_input_phone">请输入您的手机号码</string>
     <string name="login_input_password">请输入密码</string>
     <string name="register_and_login">注册并登录</string>
+    <string name="mine_edit_avatar">修改头像</string>
+    <string name="mine_edit_nickname">修改昵称</string>
+    <string name="mine_basic_info">基本资料</string>
+    <string name="mine_logout">退出登录</string>
+    <string name="register_input_code">请输入验证码</string>
+    <string name="register_account_register">账号注册</string>
+    <string name="register_get_code">获取验证码</string>
 </resources>

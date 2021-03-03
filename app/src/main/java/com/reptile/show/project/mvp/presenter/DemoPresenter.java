@@ -35,8 +35,9 @@ import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import com.reptile.show.project.mvp.contract.UserContract;
-import com.reptile.show.project.mvp.model.entity.User;
+
+import com.reptile.show.project.mvp.contract.DemoContract;
+import com.reptile.show.project.mvp.model.entity.Demo;
 import me.jessyan.rxerrorhandler.core.RxErrorHandler;
 import me.jessyan.rxerrorhandler.handler.ErrorHandleSubscriber;
 import me.jessyan.rxerrorhandler.handler.RetryWithDelay;
@@ -52,7 +53,7 @@ import me.jessyan.rxerrorhandler.handler.RetryWithDelay;
  * ================================================
  */
 @ActivityScope
-public class UserPresenter extends BasePresenter<UserContract.Model, UserContract.View> {
+public class DemoPresenter extends BasePresenter<DemoContract.Model, DemoContract.View> {
     @Inject
     RxErrorHandler mErrorHandler;
     @Inject
@@ -60,7 +61,7 @@ public class UserPresenter extends BasePresenter<UserContract.Model, UserContrac
     @Inject
     Application mApplication;
     @Inject
-    List<User> mUsers;
+    List<Demo> mDemos;
     @Inject
     RecyclerView.Adapter mAdapter;
     private int lastUserId = 1;
@@ -69,7 +70,7 @@ public class UserPresenter extends BasePresenter<UserContract.Model, UserContrac
 
 
     @Inject
-    public UserPresenter(UserContract.Model model, UserContract.View rootView) {
+    public DemoPresenter(DemoContract.Model model, DemoContract.View rootView) {
         super(model, rootView);
     }
 
@@ -138,19 +139,19 @@ public class UserPresenter extends BasePresenter<UserContract.Model, UserContrac
                     }
                 })
                 .compose(RxLifecycleUtils.bindToLifecycle(mRootView))//使用 Rxlifecycle,使 Disposable 和 Activity 一起销毁
-                .subscribe(new ErrorHandleSubscriber<List<User>>(mErrorHandler) {
+                .subscribe(new ErrorHandleSubscriber<List<Demo>>(mErrorHandler) {
                     @Override
-                    public void onNext(List<User> users) {
-                        lastUserId = users.get(users.size() - 1).getId();//记录最后一个id,用于下一次请求
+                    public void onNext(List<Demo> demos) {
+                        lastUserId = demos.get(demos.size() - 1).getId();//记录最后一个id,用于下一次请求
                         if (pullToRefresh) {
-                            mUsers.clear();//如果是下拉刷新则清空列表
+                            mDemos.clear();//如果是下拉刷新则清空列表
                         }
-                        preEndIndex = mUsers.size();//更新之前列表总长度,用于确定加载更多的起始位置
-                        mUsers.addAll(users);
+                        preEndIndex = mDemos.size();//更新之前列表总长度,用于确定加载更多的起始位置
+                        mDemos.addAll(demos);
                         if (pullToRefresh) {
                             mAdapter.notifyDataSetChanged();
                         } else {
-                            mAdapter.notifyItemRangeInserted(preEndIndex, users.size());
+                            mAdapter.notifyItemRangeInserted(preEndIndex, demos.size());
                         }
                     }
                 });
@@ -161,7 +162,7 @@ public class UserPresenter extends BasePresenter<UserContract.Model, UserContrac
     public void onDestroy() {
         super.onDestroy();
         this.mAdapter = null;
-        this.mUsers = null;
+        this.mDemos = null;
         this.mErrorHandler = null;
         this.mAppManager = null;
         this.mApplication = null;

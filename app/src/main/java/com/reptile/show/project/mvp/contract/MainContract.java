@@ -2,6 +2,7 @@ package com.reptile.show.project.mvp.contract;
 
 import android.app.Activity;
 
+import com.jess.arms.di.scope.ActivityScope;
 import com.jess.arms.mvp.IModel;
 import com.jess.arms.mvp.IView;
 import com.tbruyelle.rxpermissions2.RxPermissions;

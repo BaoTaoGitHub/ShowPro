@@ -20,10 +20,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jess.arms.di.scope.ActivityScope;
-import com.reptile.show.project.mvp.contract.UserContract;
-import com.reptile.show.project.mvp.model.UserModel;
-import com.reptile.show.project.mvp.model.entity.User;
-import com.reptile.show.project.mvp.ui.adapter.UserAdapter;
+import com.reptile.show.project.mvp.contract.DemoContract;
+import com.reptile.show.project.mvp.model.DemoModel;
+import com.reptile.show.project.mvp.model.entity.Demo;
+import com.reptile.show.project.mvp.ui.adapter.DemoAdapter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
@@ -44,32 +44,32 @@ import dagger.Provides;
  * ================================================
  */
 @Module
-public abstract class UserModule {
+public abstract class DemoModule {
 
     @ActivityScope
     @Provides
-    static RxPermissions provideRxPermissions(UserContract.View view) {
+    static RxPermissions provideRxPermissions(DemoContract.View view) {
         return new RxPermissions((FragmentActivity) view.getActivity());
     }
 
     @ActivityScope
     @Provides
-    static RecyclerView.LayoutManager provideLayoutManager(UserContract.View view) {
+    static RecyclerView.LayoutManager provideLayoutManager(DemoContract.View view) {
         return new GridLayoutManager(view.getActivity(), 2);
     }
 
     @ActivityScope
     @Provides
-    static List<User> provideUserList() {
+    static List<Demo> provideUserList() {
         return new ArrayList<>();
     }
 
     @ActivityScope
     @Provides
-    static RecyclerView.Adapter provideUserAdapter(List<User> list) {
-        return new UserAdapter(list);
+    static RecyclerView.Adapter provideUserAdapter(List<Demo> list) {
+        return new DemoAdapter(list);
     }
 
     @Binds
-    abstract UserContract.Model bindUserModel(UserModel model);
+    abstract DemoContract.Model bindUserModel(DemoModel model);
 }

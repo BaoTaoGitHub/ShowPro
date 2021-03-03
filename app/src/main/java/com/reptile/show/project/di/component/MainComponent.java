@@ -4,7 +4,6 @@ import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.di.scope.ActivityScope;
 import com.reptile.show.project.di.module.MainModule;
 import com.reptile.show.project.mvp.contract.MainContract;
-import com.reptile.show.project.mvp.contract.UserContract;
 import com.reptile.show.project.mvp.ui.activity.MainActivity;
 
 import dagger.BindsInstance;

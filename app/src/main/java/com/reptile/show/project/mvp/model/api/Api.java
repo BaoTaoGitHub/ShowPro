@@ -25,6 +25,6 @@ package com.reptile.show.project.mvp.model.api;
  * ================================================
  */
 public interface Api {
-    String APP_DOMAIN = "https://api.github.com";
+    String APP_DOMAIN = "http://kb.share2uu.com";
     String REQUEST_SUCCESS = "0";
 }

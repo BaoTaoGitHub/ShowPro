@@ -22,12 +22,12 @@ import androidx.annotation.NonNull;
 import com.jess.arms.base.BaseHolder;
 import com.jess.arms.base.DefaultAdapter;
 import com.reptile.show.project.R;
-import com.reptile.show.project.mvp.model.entity.User;
+import com.reptile.show.project.mvp.model.entity.Demo;
 
 import java.util.List;
 
 
-import com.reptile.show.project.mvp.ui.holder.UserItemHolder;
+import com.reptile.show.project.mvp.ui.holder.DemoItemHolder;
 
 /**
  * ================================================
@@ -38,16 +38,16 @@ import com.reptile.show.project.mvp.ui.holder.UserItemHolder;
  * <a href="https://github.com/JessYanCoding">Follow me</a>
  * ================================================
  */
-public class UserAdapter extends DefaultAdapter<User> {
+public class DemoAdapter extends DefaultAdapter<Demo> {
 
-    public UserAdapter(List<User> infos) {
+    public DemoAdapter(List<Demo> infos) {
         super(infos);
     }
 
     @NonNull
     @Override
-    public BaseHolder<User> getHolder(@NonNull View v, int viewType) {
-        return new UserItemHolder(v);
+    public BaseHolder<Demo> getHolder(@NonNull View v, int viewType) {
+        return new DemoItemHolder(v);
     }
 
     @Override

@@ -21,10 +21,10 @@ import androidx.lifecycle.OnLifecycleEvent;
 import com.jess.arms.di.scope.ActivityScope;
 import com.jess.arms.integration.IRepositoryManager;
 import com.jess.arms.mvp.BaseModel;
-import com.reptile.show.project.mvp.contract.UserContract;
+import com.reptile.show.project.mvp.contract.DemoContract;
 import com.reptile.show.project.mvp.model.api.cache.CommonCache;
-import com.reptile.show.project.mvp.model.api.service.UserService;
-import com.reptile.show.project.mvp.model.entity.User;
+import com.reptile.show.project.mvp.model.api.service.DemoService;
+import com.reptile.show.project.mvp.model.entity.Demo;
 
 import java.util.List;
 
@@ -48,21 +48,21 @@ import timber.log.Timber;
  * ================================================
  */
 @ActivityScope
-public class UserModel extends BaseModel implements UserContract.Model {
+public class DemoModel extends BaseModel implements DemoContract.Model {
     public static final int USERS_PER_PAGE = 10;
 
     @Inject
-    public UserModel(IRepositoryManager repositoryManager) {
+    public DemoModel(IRepositoryManager repositoryManager) {
         super(repositoryManager);
     }
 
     @Override
-    public Observable<List<User>> getUsers(int lastIdQueried, boolean update) {
+    public Observable<List<Demo>> getUsers(int lastIdQueried, boolean update) {
         //使用rxcache缓存,上拉刷新则不读取缓存,加载更多读取缓存
         return Observable.just(mRepositoryManager
-                .obtainRetrofitService(UserService.class)
+                .obtainRetrofitService(DemoService.class)
                 .getUsers(lastIdQueried, USERS_PER_PAGE))
-                .flatMap((Function<Observable<List<User>>, ObservableSource<List<User>>>) listObservable -> mRepositoryManager.obtainCacheService(CommonCache.class)
+                .flatMap((Function<Observable<List<Demo>>, ObservableSource<List<Demo>>>) listObservable -> mRepositoryManager.obtainCacheService(CommonCache.class)
                         .getUsers(listObservable
                                 , new DynamicKey(lastIdQueried)
                                 , new EvictDynamicKey(update))

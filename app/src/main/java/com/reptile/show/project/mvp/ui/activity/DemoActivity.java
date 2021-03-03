@@ -29,15 +29,15 @@ import com.jess.arms.base.DefaultAdapter;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.utils.ArmsUtils;
 import com.reptile.show.project.R;
-import com.reptile.show.project.mvp.contract.UserContract;
-import com.reptile.show.project.mvp.presenter.UserPresenter;
+import com.reptile.show.project.mvp.contract.DemoContract;
+import com.reptile.show.project.mvp.presenter.DemoPresenter;
 import com.paginate.Paginate;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import com.reptile.show.project.di.component.DaggerUserComponent;
+import com.reptile.show.project.di.component.DaggerDemoComponent;
 
 import timber.log.Timber;
 
@@ -54,7 +54,7 @@ import static com.jess.arms.utils.Preconditions.checkNotNull;
  * <a href="https://github.com/JessYanCoding">Follow me</a>
  * ================================================
  */
-public class UserActivity extends BaseActivity<UserPresenter> implements UserContract.View, SwipeRefreshLayout.OnRefreshListener {
+public class DemoActivity extends BaseActivity<DemoPresenter> implements DemoContract.View, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.recyclerView)
     RecyclerView mRecyclerView;
@@ -72,7 +72,7 @@ public class UserActivity extends BaseActivity<UserPresenter> implements UserCon
 
     @Override
     public void setupActivityComponent(@NonNull AppComponent appComponent) {
-        DaggerUserComponent
+        DaggerDemoComponent
                 .builder()
                 .appComponent(appComponent)
                 .view(this)
@@ -82,7 +82,7 @@ public class UserActivity extends BaseActivity<UserPresenter> implements UserCon
 
     @Override
     public int initView(@Nullable Bundle savedInstanceState) {
-        return R.layout.activity_user;
+        return R.layout.activity_demo;
     }
 
     @Override

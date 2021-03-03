@@ -31,5 +31,7 @@
 <!--    登录按钮默认颜色-->
     <color name="blue_login">#3B6ECE</color>
     <color name="blue_login_click">#73A1F8</color>
-
+<!--    退登红色-->
+    <color name="red_logout">#E8F44646</color>
+    <color name="red_logout_click">#E8BC3333</color>
 </resources>

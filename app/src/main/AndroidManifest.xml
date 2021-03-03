@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".mvp.ui.activity.UserActivity"/>
+        <activity android:name=".mvp.ui.activity.DemoActivity"/>
         <activity android:name=".mvp.ui.activity.SearchActivity"/>
         <activity android:name=".mvp.ui.activity.MainActivity"/>
         <activity android:name=".mvp.ui.activity.RegisterActivity"/>
