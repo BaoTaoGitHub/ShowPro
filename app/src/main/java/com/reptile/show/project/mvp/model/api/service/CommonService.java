@@ -40,8 +40,8 @@ public interface CommonService {
     String Header2 = "Accept: application/json";
     //获取注册验证码
     @FormUrlEncoded
-//    @Headers({Header,Header2})
+//    @Headers({Header})
     @POST("/api/user/register/code")
-    Observable<BaseResponse<String>> getVerCode(@Field("phone") String phone);
+    Observable<BaseResponse<Object>> getVerCode(@Field("phone") String phone);
 
 }

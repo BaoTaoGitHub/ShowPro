@@ -34,4 +34,6 @@
 <!--    退登红色-->
     <color name="red_logout">#E8F44646</color>
     <color name="red_logout_click">#E8BC3333</color>
+<!--    dialog弹窗取消按钮颜色-->
+    <color name="grey_dialog">#707070</color>
 </resources>

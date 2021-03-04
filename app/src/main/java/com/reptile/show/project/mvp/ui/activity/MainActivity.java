@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.utils.ArmsUtils;
+import com.jess.arms.utils.DataHelper;
 import com.jess.arms.utils.FragmentUtils;
 import com.jess.arms.widget.smartpopupwindow.HorizontalPosition;
 import com.jess.arms.widget.smartpopupwindow.SmartPopupWindow;
@@ -209,6 +210,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        DataHelper.clearShareprefrence(getActivity());
         this.rxPermissions = null;
         this.mFragments = null;
         this.bottomPopupWindow = null;

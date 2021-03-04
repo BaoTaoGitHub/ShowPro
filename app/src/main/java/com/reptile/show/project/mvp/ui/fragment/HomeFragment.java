@@ -1,11 +1,15 @@
 package com.reptile.show.project.mvp.ui.fragment;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -27,12 +31,15 @@ import com.jess.arms.widget.smartpopupwindow.HorizontalPosition;
 import com.jess.arms.widget.smartpopupwindow.SmartPopupWindow;
 import com.jess.arms.widget.smartpopupwindow.VerticalPosition;
 import com.reptile.show.project.R;
+import com.reptile.show.project.app.AppConstants;
 import com.reptile.show.project.di.component.DaggerHomeComponent;
 import com.reptile.show.project.mvp.contract.HomeContract;
+import com.reptile.show.project.mvp.model.entity.DirectoryEntity;
 import com.reptile.show.project.mvp.model.entity.FolderEntity;
 import com.reptile.show.project.mvp.presenter.HomePresenter;
 import com.reptile.show.project.mvp.ui.activity.MainActivity;
 import com.reptile.show.project.mvp.ui.activity.SearchActivity;
+import com.reptile.show.project.mvp.ui.activity.UrlActivity;
 import com.reptile.show.project.mvp.ui.adapter.HomeAdapter;
 
 import java.util.HashSet;
@@ -65,7 +72,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
 
     //是否是长按 选择模式
     private static Boolean isCheckModel = false;
-    private static HashSet<FolderEntity> mChoice;
+    private static HashSet<DirectoryEntity.DirUrlBean> mChoice;
 
     public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
@@ -114,7 +121,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
                 return false;
             }
         });
-        mPresenter.getRecycleData();
+//        mPresenter.getDirList();
     }
 
     private void iniRecyclerView() {
@@ -180,9 +187,9 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
         if (isCheckModel) {
             RelativeLayout mRl_folder = (RelativeLayout) view.findViewById(R.id.rl_folder);
             mRl_folder.setActivated(!mRl_folder.isActivated());
-            if (data instanceof FolderEntity) {
-                FolderEntity entity = ((FolderEntity) data);
-                entity.setChecked(!mRl_folder.isActivated());
+            if (data instanceof DirectoryEntity.DirUrlBean) {
+                DirectoryEntity.DirUrlBean entity = ((DirectoryEntity.DirUrlBean) data);
+                entity.setCheck(!mRl_folder.isActivated());
                 if(mRl_folder.isActivated()){
                     mChoice.add(entity);
                 }else {
@@ -191,6 +198,15 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
                 mTv_popup_title.setText("已选择" + mChoice.size() + "个文件");
             }
 
+        }else{
+            if (data instanceof DirectoryEntity.DirUrlBean) {
+                DirectoryEntity.DirUrlBean entity = ((DirectoryEntity.DirUrlBean) data);
+                if(viewType == AppConstants.HomeAdapterViewType.TYPE_DIR){
+                    mPresenter.getDirList(entity.getId());
+                }else {
+                    mPresenter.getUrlList(entity.getId());
+                }
+            }
         }
     }
 
@@ -205,15 +221,36 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
         } else {
             mChoice.clear();
         }
-        if (data instanceof FolderEntity) {
-            FolderEntity entity = (FolderEntity) data;
-            entity.setChecked(true);
+        if (data instanceof DirectoryEntity.DirUrlBean) {
+            DirectoryEntity.DirUrlBean entity = (DirectoryEntity.DirUrlBean) data;
+            entity.setCheck(true);
             mChoice.add(entity);
             RelativeLayout mRl_folder = (RelativeLayout) view.findViewById(R.id.rl_folder);
             mRl_folder.setActivated(!mRl_folder.isActivated());
             iniChoiceLayout();
         }
 
+    }
+
+    @Override
+    public void showWebUrl(String url) {
+        Intent intent = new Intent(getActivity(), UrlActivity.class);
+        intent.putExtra("u",url);
+        launchActivity(intent);
+    }
+
+    private void iniEditDialog(){
+        Dialog dialog = new Dialog(getActivity(),R.style.DialogNormalStyle);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_edittext_cancel_ok);
+        dialog.setCancelable(false);
+        WindowManager windowManager = getActivity().getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
+        lp.width = (int) (display.getWidth()); // 设置宽度
+        dialog.getWindow().setAttributes(lp);
+        TextView mTv_dialog_title = dialog.findViewById(R.id.tv_dialog_title);
+        dialog.show();
     }
 
     private void iniChoiceLayout() {
@@ -268,4 +305,5 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
             mAdapter.notifyDataSetChanged();
         });
     }
+
 }

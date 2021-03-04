@@ -7,6 +7,7 @@ import com.jess.arms.base.DefaultAdapter;
 import com.jess.arms.di.scope.FragmentScope;
 import com.reptile.show.project.mvp.contract.HomeContract;
 import com.reptile.show.project.mvp.model.HomeModel;
+import com.reptile.show.project.mvp.model.entity.DirectoryEntity;
 import com.reptile.show.project.mvp.model.entity.FolderEntity;
 import com.reptile.show.project.mvp.ui.adapter.HomeAdapter;
 
@@ -28,13 +29,13 @@ public abstract class HomeModule {
 
     @FragmentScope
     @Provides
-    static List<FolderEntity> provideFolderList(){
+    static List<DirectoryEntity.DirUrlBean> provideFolderList(){
         return new ArrayList<>();
     }
 
     @FragmentScope
     @Provides
-    static HomeAdapter provideHomeAdapter(List<FolderEntity> list){
+    static HomeAdapter provideHomeAdapter(List<DirectoryEntity.DirUrlBean> list){
         return new HomeAdapter(list);
     }
 

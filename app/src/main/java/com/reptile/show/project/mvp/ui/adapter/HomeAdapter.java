@@ -6,30 +6,42 @@ import androidx.annotation.NonNull;
 
 import com.jess.arms.base.BaseHolder;
 import com.jess.arms.base.DefaultAdapter;
-import com.jess.arms.integration.AppManager;
 import com.reptile.show.project.R;
-import com.reptile.show.project.mvp.model.entity.FolderEntity;
+import com.reptile.show.project.app.AppConstants;
+import com.reptile.show.project.mvp.model.entity.DirectoryEntity;
 import com.reptile.show.project.mvp.ui.holder.HomeItemHolder;
 
 import java.util.List;
 
-import javax.inject.Inject;
+public class HomeAdapter extends DefaultAdapter<DirectoryEntity.DirUrlBean> {
 
-public class HomeAdapter extends DefaultAdapter<FolderEntity> {
-
-    public HomeAdapter(List<FolderEntity> infos) {
+    public HomeAdapter(List<DirectoryEntity.DirUrlBean> infos) {
         super(infos);
     }
 
     @NonNull
     @Override
-    public BaseHolder<FolderEntity> getHolder(@NonNull View v, int viewType) {
-        return new HomeItemHolder(v);
+    public BaseHolder<DirectoryEntity.DirUrlBean> getHolder(@NonNull View v, int viewType) {
+//        if(viewType== AppConstants.HomeAdapterViewType.TYPE_DIR){
+            return new HomeItemHolder(v);
+//        }else {
+//            return new HomeItemHolder(v);
+//        }
     }
 
     @Override
     public int getLayoutId(int viewType) {
-        return R.layout.list_home;
+        if(viewType== AppConstants.HomeAdapterViewType.TYPE_DIR){
+            return R.layout.list_home;
+        }else{
+            return R.layout.list_search;
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        getItem(position);
+        return super.getItemViewType(position);
     }
 
     /**
@@ -38,8 +50,8 @@ public class HomeAdapter extends DefaultAdapter<FolderEntity> {
      */
     public void itemSelectAll(boolean isSelectAll){
         for (int i = 0; i < getItemCount(); i++) {
-            if(getItem(i).isChecked() != isSelectAll){
-                getItem(i).setChecked(isSelectAll);
+            if(getItem(i).isCheck() != isSelectAll){
+                getItem(i).setCheck(isSelectAll);
             }
         }
     }

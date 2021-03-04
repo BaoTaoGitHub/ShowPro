@@ -14,7 +14,7 @@ public interface LoginService {
     //注册
     @FormUrlEncoded
     @POST("/api/user/register")
-    Observable<BaseResponse<String>> register(@Field("phone") String phone, @Field("passwd") String pwd, @Field("code") String code);
+    Observable<BaseResponse<Object>> register(@Field("phone") String phone, @Field("passwd") String pwd, @Field("code") String code);
 
     //登录
     @FormUrlEncoded

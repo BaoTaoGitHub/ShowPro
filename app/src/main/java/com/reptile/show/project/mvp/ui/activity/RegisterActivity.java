@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.di.scope.ActivityScope;
@@ -25,16 +24,11 @@ import com.reptile.show.project.mvp.model.entity.LoginEntity;
 import com.reptile.show.project.mvp.presenter.LoginPresenter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.RxLifecycle;
-
-
 import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.OnLifecycleEvent;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Observable;
@@ -121,7 +115,7 @@ public class RegisterActivity extends BaseActivity<LoginPresenter> implements Lo
         Observable
                 .interval(0, 1, TimeUnit.SECONDS)//设置0延迟，每隔1秒发送执行一次
                 .compose(RxLifecycleUtils.bindToLifecycle((IView) RegisterActivity.this))//使用 Rxlifecycle,使 Disposable 和 Activity 一起销毁
-                .take(count + 1)//设置循环+1次
+                .take(count + 1)//设置循环60+1次
                 .map(new Function<Long, Long>() {
                     @Override
                     public Long apply(Long aLong) throws Exception {
@@ -162,10 +156,6 @@ public class RegisterActivity extends BaseActivity<LoginPresenter> implements Lo
     @Override
     public void registerAndLogin(LoginEntity entity) {
         Preconditions.checkNotNull(entity);
-        LoginEntity.InfoBean infoBean = entity.getInfo();
-        infoBean.setPhone(mPhone);
-        infoBean.setPwd(mPwd);
-        entity.setInfo(infoBean);
         if (DataHelper.saveDeviceData(getActivity(), AppConstants.LOGIN_SP, entity)) {
             if (mAppManager.activityClassIsLive(LoginActivity.class)) {
                 mAppManager.killActivity(LoginActivity.class);

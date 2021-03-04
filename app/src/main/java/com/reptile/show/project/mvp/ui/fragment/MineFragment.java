@@ -19,11 +19,14 @@ import com.jess.arms.base.BaseFragment;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.di.scope.FragmentScope;
 import com.jess.arms.utils.ArmsUtils;
+import com.jess.arms.utils.DataHelper;
 import com.jess.arms.utils.Preconditions;
 import com.reptile.show.project.R;
+import com.reptile.show.project.app.AppConstants;
 import com.reptile.show.project.di.component.DaggerMainComponent;
 import com.reptile.show.project.di.component.DaggerMineComponent;
 import com.reptile.show.project.mvp.contract.MineContract;
+import com.reptile.show.project.mvp.model.entity.LoginEntity;
 import com.reptile.show.project.mvp.presenter.MinePresenter;
 import com.reptile.show.project.mvp.ui.activity.LoginActivity;
 import com.reptile.show.project.mvp.ui.activity.MainActivity;
@@ -75,7 +78,10 @@ public class MineFragment extends BaseFragment<MinePresenter> implements MineCon
 
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
-
+        LoginEntity loginEntity = DataHelper.<LoginEntity>getDeviceData(getActivity(), AppConstants.LOGIN_SP);
+        if(loginEntity!=null){
+            mTv_nickname.setText(loginEntity.getNickname());
+        }
     }
 
     @Override

@@ -24,14 +24,24 @@ import androidx.annotation.Nullable;
 import com.google.gson.reflect.TypeToken;
 import com.jess.arms.http.GlobalHttpHandler;
 import com.jess.arms.http.log.RequestInterceptor;
+import com.jess.arms.integration.IRepositoryManager;
 import com.jess.arms.utils.ArmsUtils;
+import com.jess.arms.utils.DataHelper;
+import com.reptile.show.project.mvp.model.api.service.LoginService;
+import com.reptile.show.project.mvp.model.entity.BaseResponse;
 import com.reptile.show.project.mvp.model.entity.Demo;
+import com.reptile.show.project.mvp.model.entity.LoginEntity;
 
+import java.io.IOException;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import retrofit2.Call;
 import timber.log.Timber;
 
 /**
@@ -45,6 +55,9 @@ import timber.log.Timber;
  */
 public class GlobalHttpHandlerImpl implements GlobalHttpHandler {
     private Context context;
+
+    @Inject
+    IRepositoryManager mRepositoryManager;//用于管理网络请求层, 以及数据缓存层
 
     public GlobalHttpHandlerImpl(Context context) {
         this.context = context;
@@ -62,12 +75,28 @@ public class GlobalHttpHandlerImpl implements GlobalHttpHandler {
     @NonNull
     @Override
     public Response onHttpResultResponse(@Nullable String httpResult, @NonNull Interceptor.Chain chain, @NonNull Response response) {
+//        if (!TextUtils.isEmpty(httpResult) && RequestInterceptor.isJson(response.body().contentType())) {
+//            try {
+//                List<Demo> list = ArmsUtils.obtainAppComponentFromContext(context).gson().fromJson(httpResult, new TypeToken<List<Demo>>() {
+//                }.getType());
+//                Demo demo = list.get(0);
+//                Timber.w("Result ------> " + demo.getLogin() + "    ||   Avatar_url------> " + demo.getAvatarUrl());
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                return response;
+//            }
+//        }
         if (!TextUtils.isEmpty(httpResult) && RequestInterceptor.isJson(response.body().contentType())) {
             try {
-                List<Demo> list = ArmsUtils.obtainAppComponentFromContext(context).gson().fromJson(httpResult, new TypeToken<List<Demo>>() {
+                BaseResponse<Object> baseResponse = ArmsUtils.obtainAppComponentFromContext(context).gson().fromJson(httpResult, new TypeToken<BaseResponse<Object>>() {
                 }.getType());
-                Demo demo = list.get(0);
-                Timber.w("Result ------> " + demo.getLogin() + "    ||   Avatar_url------> " + demo.getAvatarUrl());
+                if ("9".equals(baseResponse.getRet())) {
+
+//                    Request newRequest =  chain.request().newBuilder().header("token", token)
+//                            .build();
+//                    return chain.proceed(newRequest);
+                }
+                Timber.w("接口:" + 1 + "返回Code ------> " + baseResponse.getRet() + "    ||   描述------> " + baseResponse.getDesc());
             } catch (Exception e) {
                 e.printStackTrace();
                 return response;
@@ -101,6 +130,19 @@ public class GlobalHttpHandlerImpl implements GlobalHttpHandler {
         /* 如果需要在请求服务器之前做一些操作, 则重新构建一个做过操作的 Request 并 return, 如增加 Header、Params 等请求信息, 不做操作则直接返回参数 request
         return chain.request().newBuilder().header("token", tokenId)
                               .build(); */
+//        if (DataHelper.getDeviceData(context, AppConstants.LOGIN_SP) != null) {
+//            String token = DataHelper.<LoginEntity>getDeviceData(context, AppConstants.LOGIN_SP).getInfo().getToken();
+//            return chain.request().newBuilder().header("token", token)
+//                    .build();
+//        }
         return request;
+    }
+
+    private synchronized String getNewToken(String phone,String pwd) throws IOException{
+        String newToken = "";
+//        BaseResponse<LoginEntity> response = mRepositoryManager.obtainRetrofitService(LoginService.class)
+//                .login(phone,pwd);
+        //同步获取token
+        return "";
     }
 }

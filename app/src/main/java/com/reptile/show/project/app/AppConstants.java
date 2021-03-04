@@ -5,4 +5,9 @@ public interface AppConstants {
     String LOGIN_SP = "login_data";
     String LOGIN_PHONE = "login_phone_number";
     String LOGIN_PWD = "login_pass_word";
+
+    interface HomeAdapterViewType{
+        int TYPE_DIR = 1;
+        int TYPE_URL = 2;
+    }
 }

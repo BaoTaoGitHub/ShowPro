@@ -22,12 +22,12 @@ public class LoginModel extends BaseModel implements LoginContract.Model {
     }
 
     @Override
-    public Observable<BaseResponse<String>> getVerCode(String phone) {
+    public Observable<BaseResponse<Object>> getVerCode(String phone) {
         return mRepositoryManager.obtainRetrofitService(CommonService.class).getVerCode(phone);
     }
 
     @Override
-    public Observable<BaseResponse<String>> register(String phone, String pwd, String code) {
+    public Observable<BaseResponse<Object>> register(String phone, String pwd, String code) {
         return mRepositoryManager.obtainRetrofitService(LoginService.class).register(phone,pwd,code);
     }
 

@@ -47,11 +47,11 @@ public class LoginPresenter extends BasePresenter<LoginContract.Model, LoginCont
                     mRootView.hideLoading();
                 })
                 .compose(RxLifecycleUtils.bindToLifecycle(mRootView))
-                .subscribe(new ErrorHandleSubscriber<BaseResponse<String>>(mErrorHandler) {
+                .subscribe(new ErrorHandleSubscriber<BaseResponse<Object>>(mErrorHandler) {
                     @Override
-                    public void onNext(@NonNull BaseResponse<String> stringBaseResponse) {
+                    public void onNext(@NonNull BaseResponse<Object> stringBaseResponse) {
                         if (stringBaseResponse.isSuccess()) {
-
+                            login(phone,pwd);
                         } else {
                             mRootView.showMessage(stringBaseResponse.getDesc());
                         }
@@ -75,7 +75,10 @@ public class LoginPresenter extends BasePresenter<LoginContract.Model, LoginCont
                     @Override
                     public void onNext(@NonNull BaseResponse<LoginEntity> loginEntityBaseResponse) {
                         if (loginEntityBaseResponse.isSuccess()) {
-                            mRootView.registerAndLogin(loginEntityBaseResponse.getInfo());
+                            LoginEntity entity = loginEntityBaseResponse.getInfo();
+                            entity.setPhone(phone);
+                            entity.setPwd(pwd);
+                            mRootView.registerAndLogin(entity);
                         } else {
                             mRootView.showMessage(loginEntityBaseResponse.getDesc());
                         }
@@ -95,9 +98,9 @@ public class LoginPresenter extends BasePresenter<LoginContract.Model, LoginCont
                     mRootView.hideLoading();
                 })
                 .compose(RxLifecycleUtils.bindToLifecycle(mRootView))
-                .subscribe(new ErrorHandleSubscriber<BaseResponse<String>>(mErrorHandler) {
+                .subscribe(new ErrorHandleSubscriber<BaseResponse<Object>>(mErrorHandler) {
                     @Override
-                    public void onNext(@NonNull BaseResponse<String> stringBaseResponse) {
+                    public void onNext(@NonNull BaseResponse<Object> stringBaseResponse) {
                         if (stringBaseResponse.isSuccess()) {
                             mRootView.CodeCountdown();
                         } else {

@@ -126,10 +126,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     @Override
     public void registerAndLogin(LoginEntity entity) {
         Preconditions.checkNotNull(entity);
-        LoginEntity.InfoBean infoBean = entity.getInfo();
-        infoBean.setPhone(mPhone);
-        infoBean.setPwd(mPwd);
-        entity.setInfo(infoBean);
         if(DataHelper.saveDeviceData(getActivity(), AppConstants.LOGIN_SP,entity)){
             launchActivity(new Intent(this,MainActivity.class));
             killMyself();

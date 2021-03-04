@@ -20,9 +20,9 @@ public interface LoginContract {
     }
 
     interface Model extends IModel{
-        Observable<BaseResponse<String>> getVerCode(String phone);
+        Observable<BaseResponse<Object>> getVerCode(String phone);
 
-        Observable<BaseResponse<String>> register(String phone,String pwd,String code);
+        Observable<BaseResponse<Object>> register(String phone,String pwd,String code);
 
         Observable<BaseResponse<LoginEntity>> login(String phone,String pwd);
     }

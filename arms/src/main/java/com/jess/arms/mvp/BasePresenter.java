@@ -17,6 +17,7 @@ package com.jess.arms.mvp;
 
 import android.app.Activity;
 import android.app.Service;
+import android.content.Context;
 import android.view.View;
 
 import androidx.core.app.ComponentActivity;
@@ -27,6 +28,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.OnLifecycleEvent;
 
 import com.jess.arms.integration.EventBusManager;
+import com.jess.arms.utils.DataHelper;
 import com.jess.arms.utils.Preconditions;
 import com.trello.rxlifecycle2.RxLifecycle;
 
@@ -164,6 +166,17 @@ public class BasePresenter<M extends IModel, V extends IView> implements IPresen
         if (mCompositeDisposable != null) {
             mCompositeDisposable.clear();//保证 Activity 结束时取消所有正在执行的订阅
         }
+    }
+
+    /**
+     * 获取SP对象
+     * @param context
+     * @param key
+     * @param <T>
+     * @return
+     */
+    protected  <T> T getSP(Context context,String key){
+        return DataHelper.<T>getDeviceData(context,key);
     }
 
 }
