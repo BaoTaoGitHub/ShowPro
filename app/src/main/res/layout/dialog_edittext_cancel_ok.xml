@@ -2,63 +2,83 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/shape_all_round">
-    <TextView
-        android:id="@+id/tv_dialog_title"
-        android:layout_width="@dimen/dimen_0_dp"
-        android:layout_height="?android:actionBarSize"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="@dimen/dimen_10_dp"
-        style="@style/AppTheme.TitleTextStyle"
-        android:gravity="center"
-        android:text="标题"
-        />
-    <EditText
-        android:id="@+id/et_dialog_content"
-        android:layout_width="@dimen/dimen_0_dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tv_dialog_title"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+    android:background="@android:color/transparent">
 
-        />
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_all_round"
+        android:layout_marginLeft="@dimen/dimen_20_dp"
+        android:layout_marginRight="@dimen/dimen_20_dp"
+        >
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/gui_ver_line"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintGuide_percent="0.5"
-        />
-    <Button
-        android:id="@+id/bt_dialog_cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/sel_shape_dialog_cancel"
-        android:text="@string/cancel"
-        android:textSize="@dimen/dimen_14_sp"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/gui_ver_line"
-        android:paddingLeft="@dimen/dimen_20_dp"
-        android:paddingRight="@dimen/dimen_20_dp"
-        />
-    <Button
-        android:id="@+id/bt_dialog_ok"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/sel_shape_dialog_ok"
-        android:text="@string/ok"
-        android:textSize="@dimen/dimen_14_sp"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/gui_ver_line"
-        app:layout_constraintRight_toRightOf="parent"
-        />
+        <TextView
+            android:id="@+id/tv_dialog_title"
+            style="@style/AppTheme.TitleTextStyle"
+            android:layout_width="@dimen/dimen_0_dp"
+            android:layout_height="?android:actionBarSize"
+            android:layout_marginTop="@dimen/dimen_10_dp"
+            android:gravity="center"
+            android:text="标题"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/et_dialog_content"
+            android:layout_width="@dimen/dimen_0_dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_20_dp"
+            android:layout_marginTop="@dimen/dimen_10_dp"
+            android:layout_marginRight="@dimen/dimen_20_dp"
+            android:layout_marginBottom="@dimen/dimen_10_dp"
+            android:background="@drawable/shape_edittext"
+            android:paddingTop="@dimen/dimen_20_dp"
+            android:paddingBottom="@dimen/dimen_20_dp"
+            android:paddingLeft="@dimen/dimen_5_dp"
+            android:paddingRight="@dimen/dimen_5_dp"
+            app:layout_constraintBottom_toTopOf="@+id/bt_dialog_cancel"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_dialog_title" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gui_ver_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <Button
+            android:id="@+id/bt_dialog_cancel"
+            android:layout_width="@dimen/dimen_0_dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_20_dp"
+            android:layout_marginRight="@dimen/dimen_20_dp"
+            android:layout_marginBottom="@dimen/dimen_20_dp"
+            android:background="@drawable/sel_shape_dialog_cancel"
+            android:text="@string/cancel"
+            android:textColor="@color/white"
+            android:textSize="@dimen/dimen_14_sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/gui_ver_line" />
+
+        <Button
+            android:id="@+id/bt_dialog_ok"
+            android:layout_width="@dimen/dimen_0_dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_20_dp"
+            android:layout_marginRight="@dimen/dimen_20_dp"
+            android:layout_marginBottom="@dimen/dimen_20_dp"
+            android:background="@drawable/sel_shape_dialog_ok"
+            android:text="@string/ok"
+            android:textColor="@color/white"
+            android:textSize="@dimen/dimen_14_sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/gui_ver_line"
+            app:layout_constraintRight_toRightOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

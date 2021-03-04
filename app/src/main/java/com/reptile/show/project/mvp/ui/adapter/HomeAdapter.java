@@ -40,8 +40,7 @@ public class HomeAdapter extends DefaultAdapter<DirectoryEntity.DirUrlBean> {
 
     @Override
     public int getItemViewType(int position) {
-        getItem(position);
-        return super.getItemViewType(position);
+        return getItem(position).getViewType();
     }
 
     /**

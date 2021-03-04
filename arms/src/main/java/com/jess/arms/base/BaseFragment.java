@@ -33,6 +33,7 @@ import com.jess.arms.integration.cache.CacheType;
 import com.jess.arms.integration.lifecycle.FragmentLifecycleable;
 import com.jess.arms.mvp.IPresenter;
 import com.jess.arms.utils.ArmsUtils;
+import com.jess.arms.utils.ProgressDialogUtils;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import java.util.PrimitiveIterator;
@@ -62,11 +63,11 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     protected Context mContext;
     private OnBackPressedDispatcher dispatcher;
     private OnBackPressedCallback callback;
-
     @Inject
     @Nullable
     protected P mPresenter;//如果当前页面逻辑简单, Presenter 可以为 null
     private Cache<String, Object> mCache;
+    protected ProgressDialogUtils progressDialogUtils;
 
     @NonNull
     @Override

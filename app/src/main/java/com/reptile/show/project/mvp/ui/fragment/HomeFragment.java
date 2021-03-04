@@ -10,7 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,7 +29,9 @@ import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.utils.ArmsUtils;
 import com.jess.arms.utils.DeviceUtils;
 import com.jess.arms.utils.LogUtils;
+import com.jess.arms.utils.MyDialog;
 import com.jess.arms.utils.Preconditions;
+import com.jess.arms.utils.ProgressDialogUtils;
 import com.jess.arms.widget.smartpopupwindow.HorizontalPosition;
 import com.jess.arms.widget.smartpopupwindow.SmartPopupWindow;
 import com.jess.arms.widget.smartpopupwindow.VerticalPosition;
@@ -43,9 +48,11 @@ import com.reptile.show.project.mvp.ui.activity.UrlActivity;
 import com.reptile.show.project.mvp.ui.adapter.HomeAdapter;
 
 import java.util.HashSet;
+import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -63,6 +70,10 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
     @BindView(R.id.ll_search)
     LinearLayout mLl_search;
 
+    @BindString(R.string.toolbar_menu_new_folder)
+    String mNewFolder;
+    @BindString(R.string.rename)
+    String mRename;
     static TextView mTv_popup_title;
 
     @Inject
@@ -107,6 +118,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
                     case R.id.menu_batch_editor:
                         return true;
                     case R.id.menu_new_folder:
+                        iniEditDialog(true,0);
                         return true;
                     case R.id.menu_sort_modify_time:
                         item.setChecked(!item.isChecked());
@@ -121,7 +133,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
                 return false;
             }
         });
-//        mPresenter.getDirList();
+        mPresenter.getDirList(0);
     }
 
     private void iniRecyclerView() {
@@ -138,12 +150,17 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
 
     @Override
     public void showLoading() {
-
+        if (progressDialogUtils == null) {
+            progressDialogUtils = ProgressDialogUtils.getInstance(getActivity());
+            progressDialogUtils.setMessage("请稍后...");
+        }
+        progressDialogUtils.show();
     }
 
     @Override
     public void hideLoading() {
-
+        if (progressDialogUtils != null)
+            progressDialogUtils.dismiss();
     }
 
     @Override
@@ -185,18 +202,36 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
     @Override
     public void onItemClick(@NonNull View view, int viewType, @NonNull Object data, int position) {
         if (isCheckModel) {
+            mAdapter.itemSelectAll(false);
+            mAdapter.notifyDataSetChanged();
+            mChoice.clear();
             RelativeLayout mRl_folder = (RelativeLayout) view.findViewById(R.id.rl_folder);
-            mRl_folder.setActivated(!mRl_folder.isActivated());
+            mRl_folder.setActivated(true);
             if (data instanceof DirectoryEntity.DirUrlBean) {
                 DirectoryEntity.DirUrlBean entity = ((DirectoryEntity.DirUrlBean) data);
-                entity.setCheck(!mRl_folder.isActivated());
-                if(mRl_folder.isActivated()){
-                    mChoice.add(entity);
-                }else {
-                    mChoice.remove(entity);
+                entity.setCheck(true);
+                mChoice.add(entity);
+                boolean isDir;
+                if(isDir = entity.getViewType()==AppConstants.HomeAdapterViewType.TYPE_DIR){
+                    mTv_popup_title.setText("已选择" + mChoice.size() + "个文件夹");
+                }else{
+                    mTv_popup_title.setText("已选择" + mChoice.size() + "个文件");
                 }
-                mTv_popup_title.setText("已选择" + mChoice.size() + "个文件");
+                notifyChangeSingleBottom(isDir);
             }
+            //TODO 复选
+//            RelativeLayout mRl_folder = (RelativeLayout) view.findViewById(R.id.rl_folder);
+//            mRl_folder.setActivated(!mRl_folder.isActivated());
+//            if (data instanceof DirectoryEntity.DirUrlBean) {
+//                DirectoryEntity.DirUrlBean entity = ((DirectoryEntity.DirUrlBean) data);
+//                entity.setCheck(!mRl_folder.isActivated());
+//                if(mRl_folder.isActivated()){
+//                    mChoice.add(entity);
+//                }else {
+//                    mChoice.remove(entity);
+//                }
+//                mTv_popup_title.setText("已选择" + mChoice.size() + "个文件");
+//            }
 
         }else{
             if (data instanceof DirectoryEntity.DirUrlBean) {
@@ -227,7 +262,11 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
             mChoice.add(entity);
             RelativeLayout mRl_folder = (RelativeLayout) view.findViewById(R.id.rl_folder);
             mRl_folder.setActivated(!mRl_folder.isActivated());
-            iniChoiceLayout();
+            boolean isDir = ((DirectoryEntity.DirUrlBean) data).getViewType()==AppConstants.HomeAdapterViewType.TYPE_DIR;
+            String choiceType = isDir?
+            "文件夹":"文件";
+            iniChoiceLayout(choiceType);
+            notifyChangeSingleBottom(isDir);
         }
 
     }
@@ -239,21 +278,35 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
         launchActivity(intent);
     }
 
-    private void iniEditDialog(){
-        Dialog dialog = new Dialog(getActivity(),R.style.DialogNormalStyle);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_edittext_cancel_ok);
-        dialog.setCancelable(false);
-        WindowManager windowManager = getActivity().getWindowManager();
-        Display display = windowManager.getDefaultDisplay();
-        WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
-        lp.width = (int) (display.getWidth()); // 设置宽度
-        dialog.getWindow().setAttributes(lp);
-        TextView mTv_dialog_title = dialog.findViewById(R.id.tv_dialog_title);
-        dialog.show();
+    private void iniEditDialog(boolean isNewFolder,int parentId){
+        View layout = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_edittext_cancel_ok,null,false);
+        TextView mTv_dialog_title = layout.findViewById(R.id.tv_dialog_title);
+        EditText mContent = layout.findViewById(R.id.et_dialog_content);
+        mTv_dialog_title.setText(isNewFolder?mNewFolder:mRename);
+        MyDialog myDialog = new MyDialog(getActivity(),layout,MyDialog.LocationView.CENTER);
+        Button mOk = layout.findViewById(R.id.bt_dialog_ok);
+        Button mCancel = layout.findViewById(R.id.bt_dialog_cancel);
+        mOk.setOnClickListener(v -> {
+            String input = mContent.getText().toString();
+            if(Preconditions.checkString(input)){
+                if(isNewFolder){
+                    mPresenter.createDir(input,parentId);
+                }else {
+                    mPresenter.renameDir(parentId,input);
+                }
+            }
+        });
+        mCancel.setOnClickListener(v -> {
+            myDialog.dismiss();
+        });
+        myDialog.show();
     }
 
-    private void iniChoiceLayout() {
+    private RadioButton rb_popup_remove;
+    private RadioButton rb_popup_rename;
+    private RadioButton rb_popup_move;
+    private RadioButton rb_popup_new_folder;
+    private void iniChoiceLayout(String choiceType) {
         //Top
         View top_view = LayoutInflater.from(getActivity()).inflate(R.layout.popup_top_title, null);
         SmartPopupWindow topPopupWindow = SmartPopupWindow.Builder.build(getActivity(), top_view)
@@ -262,7 +315,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
                 .createPopupWindow();
         topPopupWindow.setFocusable(false);
         mTv_popup_title = (TextView) top_view.findViewById(R.id.tv_popup_title);
-        mTv_popup_title.setText("已选择" + mChoice.size() + "个文件");
+        mTv_popup_title.setText("已选择" + mChoice.size() + "个"+choiceType);
         //Bottom
         View bottom_view = LayoutInflater.from(getActivity()).inflate(R.layout.popup_bottom_title, null);
         LogUtils.debugInfo("==测试Dimen==", ArmsUtils.getDimens(getActivity(), R.dimen.dimen_49_dp) + "");
@@ -275,23 +328,37 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
 
         topPopupWindow.showAtAnchorView(mToolbar_title, VerticalPosition.ALIGN_TOP, HorizontalPosition.CENTER);
         bottomPopupWindow.showAtAnchorView(mLinear_home, VerticalPosition.BELOW, HorizontalPosition.CENTER);
-        RadioGroup mRg_popup_bottom = (RadioGroup) bottom_view.findViewById(R.id.rg_popup_bottom);
-        mRg_popup_bottom.setOnCheckedChangeListener((group, checkedId) -> {
-            switch (checkedId) {
+        rb_popup_remove = (RadioButton) bottom_view.findViewById(R.id.rb_popup_remove);
+        rb_popup_rename = (RadioButton) bottom_view.findViewById(R.id.rb_popup_rename);
+        rb_popup_move = (RadioButton) bottom_view.findViewById(R.id.rb_popup_move);
+        rb_popup_new_folder = (RadioButton) bottom_view.findViewById(R.id.rb_popup_new_folder);
+        View.OnClickListener listener = view->{
+            switch (view.getId()) {
                 case R.id.rb_popup_new_folder:
-                    showMessage("点击新建文件夹");
+                    if(mChoice.iterator().hasNext()){
+                        int dirId = mChoice.iterator().next().getId();
+                        iniEditDialog(true,dirId);
+                    }
                     break;
                 case R.id.rb_popup_move:
                     showMessage("点击移动");
                     break;
                 case R.id.rb_popup_rename:
-                    showMessage("点击重命名");
+                    if(mChoice.iterator().hasNext()){
+                        int dirId = mChoice.iterator().next().getId();
+                        iniEditDialog(false,dirId);
+                    }
                     break;
                 case R.id.rb_popup_remove:
                     showMessage("点击删除");
                     break;
             }
-        });
+        };
+        rb_popup_remove.setOnClickListener(listener);
+        rb_popup_rename.setOnClickListener(listener);
+        rb_popup_move.setOnClickListener(listener);
+        rb_popup_new_folder.setOnClickListener(listener);
+
         //Top的按钮事件
         top_view.findViewById(R.id.tv_popup_cancel).setOnClickListener(view1 -> {
             mAdapter.itemSelectAll(false);
@@ -300,10 +367,52 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
             topPopupWindow.dismiss();
             bottomPopupWindow.dismiss();
         });
-        top_view.findViewById(R.id.tv_popup_select_all).setOnClickListener(v -> {
+        //TODO 多选 暂时隐藏
+        TextView mSelAll = top_view.findViewById(R.id.tv_popup_select_all);
+        mSelAll.setVisibility(View.GONE);
+        mSelAll.setOnClickListener(v -> {
             mAdapter.itemSelectAll(true);
             mAdapter.notifyDataSetChanged();
         });
     }
 
+    //根据批量选择的文件夹与URL更新状态
+    private void notifyChangeChoiceBottom(){
+        if(rb_popup_remove!=null){
+            int dirNum = 0;
+            int urlNum = 0;
+            for (DirectoryEntity.DirUrlBean bean :mChoice) {
+                if(bean.getViewType()==AppConstants.HomeAdapterViewType.TYPE_DIR){
+                    dirNum++;
+
+                }else{
+                    urlNum++;
+                }
+            }
+            //TODO 暂时不做
+            if(dirNum==1 && urlNum==0){
+                rb_popup_new_folder.setEnabled(true);
+            }else if(dirNum > 1 || urlNum>0){
+                rb_popup_rename.setEnabled(false);
+                rb_popup_new_folder.setEnabled(false);
+            }
+            if(urlNum>0){
+                rb_popup_new_folder.setEnabled(false);
+            }
+
+        }
+    }
+    //根据单选的文件夹或URL更新底部导航状态
+    private void notifyChangeSingleBottom(boolean isDir){
+        if(!isDir){
+            if(rb_popup_new_folder.isEnabled()){
+                rb_popup_new_folder.setEnabled(false);
+            }
+        }else{
+            rb_popup_remove.setEnabled(true);
+            rb_popup_rename.setEnabled(true);
+            rb_popup_move.setEnabled(true);
+            rb_popup_new_folder.setEnabled(true);
+        }
+    }
 }

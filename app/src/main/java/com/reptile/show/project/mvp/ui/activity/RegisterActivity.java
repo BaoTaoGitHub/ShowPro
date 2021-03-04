@@ -176,7 +176,7 @@ public class RegisterActivity extends BaseActivity<LoginPresenter> implements Lo
     @Override
     public void showLoading() {
         if (progressDialogUtils == null) {
-            progressDialogUtils = ProgressDialogUtils.getInstance(this);
+            progressDialogUtils = ProgressDialogUtils.getInstance(getActivity());
             progressDialogUtils.setMessage("请稍后...");
         }
         progressDialogUtils.show();

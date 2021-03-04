@@ -10,7 +10,7 @@
         android:id="@+id/rb_popup_new_folder"
         android:layout_width="@dimen/dimen_0_dp"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dimen_2_dp"
+        android:paddingTop="@dimen/dimen_5_dp"
         android:layout_weight="1"
         android:button="@null"
         android:checked="true"
@@ -18,13 +18,17 @@
         android:gravity="center"
         android:text="@string/toolbar_menu_new_folder"
         android:textColor="@color/white"
-        android:textSize="@dimen/dimen_12_sp" />
+        android:textSize="@dimen/dimen_12_sp"
+        android:background="@drawable/sel_blue_grey"
+        android:enabled="false"
+        />
 
     <RadioButton
         android:id="@+id/rb_popup_move"
         android:layout_width="@dimen/dimen_0_dp"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dimen_2_dp"
+        android:paddingTop="@dimen/dimen_5_dp"
+        android:enabled="false"
         android:layout_weight="1"
         android:button="@null"
         android:checked="true"
@@ -32,33 +36,41 @@
         android:gravity="center"
         android:text="@string/move"
         android:textColor="@color/white"
-        android:textSize="@dimen/dimen_12_sp" />
+        android:textSize="@dimen/dimen_12_sp"
+        android:background="@drawable/sel_blue_grey"
+        />
 
     <RadioButton
         android:id="@+id/rb_popup_rename"
         android:layout_width="@dimen/dimen_0_dp"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dimen_2_dp"
+        android:paddingTop="@dimen/dimen_5_dp"
         android:layout_weight="1"
+        android:enabled="false"
         android:button="@null"
         android:checked="true"
         android:drawableTop="@mipmap/ico_popup_rename"
         android:gravity="center"
         android:text="@string/rename"
         android:textColor="@color/white"
-        android:textSize="@dimen/dimen_12_sp" />
+        android:textSize="@dimen/dimen_12_sp"
+        android:background="@drawable/sel_blue_grey"
+        />
 
     <RadioButton
         android:id="@+id/rb_popup_remove"
         android:layout_width="@dimen/dimen_0_dp"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dimen_2_dp"
+        android:paddingTop="@dimen/dimen_5_dp"
         android:layout_weight="1"
         android:button="@null"
+        android:enabled="false"
         android:checked="true"
         android:drawableTop="@mipmap/ico_popup_remove"
         android:gravity="center"
         android:text="@string/remove"
         android:textColor="@color/white"
-        android:textSize="@dimen/dimen_12_sp" />
+        android:textSize="@dimen/dimen_12_sp"
+        android:background="@drawable/sel_blue_grey"
+        />
 </RadioGroup>
