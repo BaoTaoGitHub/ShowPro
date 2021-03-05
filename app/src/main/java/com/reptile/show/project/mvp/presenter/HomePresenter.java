@@ -74,7 +74,7 @@ public class HomePresenter extends BasePresenter<HomeContract.Model, HomeContrac
                         if (stringBaseResponse.isSuccess()) {
                             mDirUrlList.clear();
                             mDirUrlList.addAll(stringBaseResponse.getInfo().getDirUrl());
-                            mAdapter.notifyItemInserted(0);
+                            mAdapter.notifyDataSetChanged();
                         } else {
                             mRootView.showMessage(stringBaseResponse.getDesc());
                         }
@@ -122,7 +122,7 @@ public class HomePresenter extends BasePresenter<HomeContract.Model, HomeContrac
                     @Override
                     public void onNext(@NonNull BaseResponse<Object> stringBaseResponse) {
                         if (stringBaseResponse.isSuccess()) {
-                            getDirList(0);
+                            getDirList(parentId);
                         } else {
                             mRootView.showMessage(stringBaseResponse.getDesc());
                         }
@@ -157,6 +157,30 @@ public class HomePresenter extends BasePresenter<HomeContract.Model, HomeContrac
     public void renameDir(int dId,String name){
         LoginEntity entity =  getSP(mRootView.getActivity(),AppConstants.LOGIN_SP);
         mModel.editDir(entity.getToken(),dId,name)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(disposable -> {
+                    mRootView.showLoading();
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doFinally(() -> {
+                    mRootView.hideLoading();
+                }).compose(RxLifecycleUtils.bindToLifecycle(mRootView))
+                .subscribe(new ErrorHandleSubscriber<BaseResponse<Object>>(mErrorHandler) {
+                    @Override
+                    public void onNext(@NonNull BaseResponse<Object> stringBaseResponse) {
+                        if (stringBaseResponse.isSuccess()) {
+                            mAdapter.notifyDataSetChanged();
+                        } else {
+                            mRootView.showMessage(stringBaseResponse.getDesc());
+                        }
+                    }
+                });
+    }
+
+    public void removeDir(int dId){
+        LoginEntity entity =  getSP(mRootView.getActivity(),AppConstants.LOGIN_SP);
+        mModel.deleteDir(entity.getToken(),dId)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(disposable -> {
                     mRootView.showLoading();

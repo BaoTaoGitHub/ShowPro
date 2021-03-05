@@ -81,6 +81,8 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
     @Inject
     RecyclerView.LayoutManager mLayoutManager;
 
+    //是否开启多选模式
+    private boolean isMultipleEnable = false;
     //是否是长按 选择模式
     private static Boolean isCheckModel = false;
     private static HashSet<DirectoryEntity.DirUrlBean> mChoice;
@@ -118,7 +120,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
                     case R.id.menu_batch_editor:
                         return true;
                     case R.id.menu_new_folder:
-                        iniEditDialog(true,0);
+                        iniEditDialog(true, 0);
                         return true;
                     case R.id.menu_sort_modify_time:
                         item.setChecked(!item.isChecked());
@@ -187,7 +189,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
      * 点击搜索布局监听
      */
     @OnClick(R.id.ll_search)
-    public void onLinearSearchClick(){
+    public void onLinearSearchClick() {
         launchActivity(new Intent(getActivity(), SearchActivity.class));
     }
 
@@ -201,44 +203,26 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
      */
     @Override
     public void onItemClick(@NonNull View view, int viewType, @NonNull Object data, int position) {
-        if (isCheckModel) {
-            mAdapter.itemSelectAll(false);
-            mAdapter.notifyDataSetChanged();
-            mChoice.clear();
+        if (isMultipleEnable&&isCheckModel) {
             RelativeLayout mRl_folder = (RelativeLayout) view.findViewById(R.id.rl_folder);
-            mRl_folder.setActivated(true);
+            mRl_folder.setActivated(!mRl_folder.isActivated());
             if (data instanceof DirectoryEntity.DirUrlBean) {
                 DirectoryEntity.DirUrlBean entity = ((DirectoryEntity.DirUrlBean) data);
-                entity.setCheck(true);
-                mChoice.add(entity);
-                boolean isDir;
-                if(isDir = entity.getViewType()==AppConstants.HomeAdapterViewType.TYPE_DIR){
-                    mTv_popup_title.setText("已选择" + mChoice.size() + "个文件夹");
-                }else{
-                    mTv_popup_title.setText("已选择" + mChoice.size() + "个文件");
-                }
-                notifyChangeSingleBottom(isDir);
-            }
-            //TODO 复选
-//            RelativeLayout mRl_folder = (RelativeLayout) view.findViewById(R.id.rl_folder);
-//            mRl_folder.setActivated(!mRl_folder.isActivated());
-//            if (data instanceof DirectoryEntity.DirUrlBean) {
-//                DirectoryEntity.DirUrlBean entity = ((DirectoryEntity.DirUrlBean) data);
-//                entity.setCheck(!mRl_folder.isActivated());
-//                if(mRl_folder.isActivated()){
-//                    mChoice.add(entity);
-//                }else {
-//                    mChoice.remove(entity);
-//                }
-//                mTv_popup_title.setText("已选择" + mChoice.size() + "个文件");
-//            }
-
-        }else{
-            if (data instanceof DirectoryEntity.DirUrlBean) {
-                DirectoryEntity.DirUrlBean entity = ((DirectoryEntity.DirUrlBean) data);
-                if(viewType == AppConstants.HomeAdapterViewType.TYPE_DIR){
-                    mPresenter.getDirList(entity.getId());
+                entity.setCheck(!mRl_folder.isActivated());
+                if(mRl_folder.isActivated()){
+                    mChoice.add(entity);
                 }else {
+                    mChoice.remove(entity);
+                }
+                mTv_popup_title.setText("已选择" + mChoice.size() + "个文件");
+            }
+
+        } else {
+            if (data instanceof DirectoryEntity.DirUrlBean) {
+                DirectoryEntity.DirUrlBean entity = ((DirectoryEntity.DirUrlBean) data);
+                if (viewType == AppConstants.HomeAdapterViewType.TYPE_DIR) {
+                    mPresenter.getDirList(entity.getId());
+                } else {
                     mPresenter.getUrlList(entity.getId());
                 }
             }
@@ -248,51 +232,86 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
 
     @Override
     public void onItemLongClick(@NonNull View view, int viewType, @NonNull Object data, int position) {
-        if (isCheckModel)
-            return;
-        isCheckModel = true;
-        if (mChoice == null) {
-            mChoice = new HashSet<>();
-        } else {
-            mChoice.clear();
-        }
-        if (data instanceof DirectoryEntity.DirUrlBean) {
-            DirectoryEntity.DirUrlBean entity = (DirectoryEntity.DirUrlBean) data;
-            entity.setCheck(true);
-            mChoice.add(entity);
-            RelativeLayout mRl_folder = (RelativeLayout) view.findViewById(R.id.rl_folder);
-            mRl_folder.setActivated(!mRl_folder.isActivated());
-            boolean isDir = ((DirectoryEntity.DirUrlBean) data).getViewType()==AppConstants.HomeAdapterViewType.TYPE_DIR;
-            String choiceType = isDir?
-            "文件夹":"文件";
-            iniChoiceLayout(choiceType);
-            notifyChangeSingleBottom(isDir);
-        }
+        if (!isMultipleEnable) {
+            if (data instanceof DirectoryEntity.DirUrlBean) {
+                boolean isDir = ((DirectoryEntity.DirUrlBean) data).getViewType() == AppConstants.HomeAdapterViewType.TYPE_DIR;
+                iniOnLongMenuDialog(isDir,((DirectoryEntity.DirUrlBean) data).getId());
+            }
 
+        } else {
+            if (isCheckModel)
+                return;
+            isCheckModel = true;
+            if (mChoice == null) {
+                mChoice = new HashSet<>();
+            } else {
+                mChoice.clear();
+            }
+            if (data instanceof DirectoryEntity.DirUrlBean) {
+                DirectoryEntity.DirUrlBean entity = (DirectoryEntity.DirUrlBean) data;
+                entity.setCheck(true);
+                mChoice.add(entity);
+                RelativeLayout mRl_folder = (RelativeLayout) view.findViewById(R.id.rl_folder);
+                mRl_folder.setActivated(!mRl_folder.isActivated());
+                iniChoiceLayout();
+                notifyChangeChoiceBottom();
+            }
+        }
     }
 
     @Override
     public void showWebUrl(String url) {
         Intent intent = new Intent(getActivity(), UrlActivity.class);
-        intent.putExtra("u",url);
+        intent.putExtra("u", url);
         launchActivity(intent);
     }
 
-    private void iniEditDialog(boolean isNewFolder,int parentId){
-        View layout = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_edittext_cancel_ok,null,false);
+    private void iniOnLongMenuDialog(boolean isDir,int id){
+        View layout = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_single_menu, null, false);
+        MyDialog myDialog = new MyDialog(getActivity(), layout, MyDialog.LocationView.CENTER);
+        myDialog.setCancelable(true);
+        myDialog.setCanceledOnTouchOutside(true);
+        View.OnClickListener listener = view -> {
+          switch (view.getId()){
+              case R.id.rl_new_folder:
+                  iniEditDialog(true,id);
+                  break;
+              case R.id.rl_rename:
+                  iniEditDialog(false,id);
+                  break;
+              case R.id.rl_delete:
+                  mPresenter.removeDir(id);
+                  break;
+              case R.id.rl_move:
+
+                  break;
+          }
+        };
+        RelativeLayout mNew = layout.findViewById(R.id.rl_new_folder);
+        mNew.setOnClickListener(listener);
+        layout.findViewById(R.id.rl_rename).setOnClickListener(listener);
+        layout.findViewById(R.id.rl_delete).setOnClickListener(listener);
+        layout.findViewById(R.id.rl_move).setOnClickListener(listener);
+        if(!isDir){
+            mNew.setVisibility(View.GONE);
+        }
+        myDialog.show();
+    }
+    private void iniEditDialog(boolean isNewFolder, int parentId) {
+        View layout = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_edittext_cancel_ok, null, false);
         TextView mTv_dialog_title = layout.findViewById(R.id.tv_dialog_title);
         EditText mContent = layout.findViewById(R.id.et_dialog_content);
-        mTv_dialog_title.setText(isNewFolder?mNewFolder:mRename);
-        MyDialog myDialog = new MyDialog(getActivity(),layout,MyDialog.LocationView.CENTER);
+        mTv_dialog_title.setText(isNewFolder ? mNewFolder : mRename);
+        MyDialog myDialog = new MyDialog(getActivity(), layout, MyDialog.LocationView.CENTER);
         Button mOk = layout.findViewById(R.id.bt_dialog_ok);
         Button mCancel = layout.findViewById(R.id.bt_dialog_cancel);
         mOk.setOnClickListener(v -> {
             String input = mContent.getText().toString();
-            if(Preconditions.checkString(input)){
-                if(isNewFolder){
-                    mPresenter.createDir(input,parentId);
-                }else {
-                    mPresenter.renameDir(parentId,input);
+            if (Preconditions.checkString(input)) {
+                if (isNewFolder) {
+                    mPresenter.createDir(input, parentId);
+                } else {
+                    mPresenter.renameDir(parentId, input);
                 }
             }
         });
@@ -306,7 +325,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
     private RadioButton rb_popup_rename;
     private RadioButton rb_popup_move;
     private RadioButton rb_popup_new_folder;
-    private void iniChoiceLayout(String choiceType) {
+    private void iniChoiceLayout() {
         //Top
         View top_view = LayoutInflater.from(getActivity()).inflate(R.layout.popup_top_title, null);
         SmartPopupWindow topPopupWindow = SmartPopupWindow.Builder.build(getActivity(), top_view)
@@ -315,7 +334,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
                 .createPopupWindow();
         topPopupWindow.setFocusable(false);
         mTv_popup_title = (TextView) top_view.findViewById(R.id.tv_popup_title);
-        mTv_popup_title.setText("已选择" + mChoice.size() + "个"+choiceType);
+        mTv_popup_title.setText("已选择" + mChoice.size() + "个文件");
         //Bottom
         View bottom_view = LayoutInflater.from(getActivity()).inflate(R.layout.popup_bottom_title, null);
         LogUtils.debugInfo("==测试Dimen==", ArmsUtils.getDimens(getActivity(), R.dimen.dimen_49_dp) + "");
@@ -332,21 +351,21 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
         rb_popup_rename = (RadioButton) bottom_view.findViewById(R.id.rb_popup_rename);
         rb_popup_move = (RadioButton) bottom_view.findViewById(R.id.rb_popup_move);
         rb_popup_new_folder = (RadioButton) bottom_view.findViewById(R.id.rb_popup_new_folder);
-        View.OnClickListener listener = view->{
+        View.OnClickListener listener = view -> {
             switch (view.getId()) {
                 case R.id.rb_popup_new_folder:
-                    if(mChoice.iterator().hasNext()){
+                    if (mChoice.iterator().hasNext()) {
                         int dirId = mChoice.iterator().next().getId();
-                        iniEditDialog(true,dirId);
+                        iniEditDialog(true, dirId);
                     }
                     break;
                 case R.id.rb_popup_move:
                     showMessage("点击移动");
                     break;
                 case R.id.rb_popup_rename:
-                    if(mChoice.iterator().hasNext()){
+                    if (mChoice.iterator().hasNext()) {
                         int dirId = mChoice.iterator().next().getId();
-                        iniEditDialog(false,dirId);
+                        iniEditDialog(false, dirId);
                     }
                     break;
                 case R.id.rb_popup_remove:
@@ -367,9 +386,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
             topPopupWindow.dismiss();
             bottomPopupWindow.dismiss();
         });
-        //TODO 多选 暂时隐藏
         TextView mSelAll = top_view.findViewById(R.id.tv_popup_select_all);
-        mSelAll.setVisibility(View.GONE);
         mSelAll.setOnClickListener(v -> {
             mAdapter.itemSelectAll(true);
             mAdapter.notifyDataSetChanged();
@@ -377,42 +394,29 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
     }
 
     //根据批量选择的文件夹与URL更新状态
-    private void notifyChangeChoiceBottom(){
-        if(rb_popup_remove!=null){
+    private void notifyChangeChoiceBottom() {
+        if (rb_popup_remove != null) {
             int dirNum = 0;
             int urlNum = 0;
-            for (DirectoryEntity.DirUrlBean bean :mChoice) {
-                if(bean.getViewType()==AppConstants.HomeAdapterViewType.TYPE_DIR){
+            for (DirectoryEntity.DirUrlBean bean : mChoice) {
+                if (bean.getViewType() == AppConstants.HomeAdapterViewType.TYPE_DIR) {
                     dirNum++;
 
-                }else{
+                } else {
                     urlNum++;
                 }
             }
             //TODO 暂时不做
-            if(dirNum==1 && urlNum==0){
+            if (dirNum == 1 && urlNum == 0) {
                 rb_popup_new_folder.setEnabled(true);
-            }else if(dirNum > 1 || urlNum>0){
+            } else if (dirNum > 1 || urlNum > 0) {
                 rb_popup_rename.setEnabled(false);
                 rb_popup_new_folder.setEnabled(false);
             }
-            if(urlNum>0){
+            if (urlNum > 0) {
                 rb_popup_new_folder.setEnabled(false);
             }
 
-        }
-    }
-    //根据单选的文件夹或URL更新底部导航状态
-    private void notifyChangeSingleBottom(boolean isDir){
-        if(!isDir){
-            if(rb_popup_new_folder.isEnabled()){
-                rb_popup_new_folder.setEnabled(false);
-            }
-        }else{
-            rb_popup_remove.setEnabled(true);
-            rb_popup_rename.setEnabled(true);
-            rb_popup_move.setEnabled(true);
-            rb_popup_new_folder.setEnabled(true);
         }
     }
 }
