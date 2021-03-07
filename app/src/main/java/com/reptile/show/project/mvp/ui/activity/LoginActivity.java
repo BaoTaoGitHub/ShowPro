@@ -64,7 +64,10 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
 
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
-
+        String oldAccount;
+        if(Preconditions.checkString(oldAccount = DataHelper.getStringSF(getActivity(),AppConstants.Login_ACCOUNT))){
+            mEt_login_phone.setText(oldAccount);
+        }
     }
 
     @OnClick({R.id.bt_login,R.id.tv_login_register})
@@ -127,6 +130,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     public void registerAndLogin(LoginEntity entity) {
         Preconditions.checkNotNull(entity);
         if(DataHelper.saveDeviceData(getActivity(), AppConstants.LOGIN_SP,entity)){
+            DataHelper.setStringSF(getActivity(),AppConstants.Login_ACCOUNT,entity.getPhone());
             launchActivity(new Intent(this,MainActivity.class));
             killMyself();
         }else {

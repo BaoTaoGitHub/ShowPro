@@ -2,6 +2,8 @@ package com.reptile.show.project.mvp.contract;
 
 import android.app.Activity;
 
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.jess.arms.base.DefaultAdapter;
 import com.jess.arms.mvp.IModel;
 import com.jess.arms.mvp.IView;
@@ -21,24 +23,30 @@ public interface HomeContract {
         Activity getActivity();
 
         void showWebUrl(String url);
+
+        void showTitleBack(boolean canBack);
+
+        SwipeRefreshLayout getRefresh();
     }
 
     //Model层定义接口,外部只需关心Model返回的数据,无需关心内部细节,如是否使用缓存
     interface Model extends IModel{
         //获取目录
-        Observable<BaseResponse<DirectoryEntity>> getDirContent( String token,  int d_id);
+        Observable<DirectoryEntity> getDirContent( String token,  int d_id,boolean isUpdate);
         //获取URL内容
-        Observable<BaseResponse<UrlEntity>> getUrlContent(String token, int url_id);
+        Observable<BaseResponse<UrlEntity>> getUrlContent(String token, int url_id,boolean isUpdate);
         //创建目录
-        Observable<BaseResponse<Object>> createDir(String token,String name,int parent_id);
+        Observable<BaseResponse<Object>> createDir(String token,String name,int parent_id,boolean isUpdate);
         //删除目录
-        Observable<BaseResponse<Object>> deleteDir(String token,int d_id);
+        Observable<BaseResponse<Object>> deleteDir(String token,int d_id,boolean isUpdate);
         //修改目录
-        Observable<BaseResponse<Object>> editDir( String token,int d_id, String name);
+        Observable<BaseResponse<Object>> editDir( String token,int d_id, String name,boolean isUpdate);
         //移动目录
-        Observable<BaseResponse<Object>> moveDir( String token,int d_id, int parent_id);
+        Observable<BaseResponse<Object>> moveDir( String token,int d_id, int parent_id,boolean isUpdate);
+        //创建URL
+        Observable<BaseResponse<Object>> createUrl(String token,int d_id,String url,boolean isUpdate);
         //移动URL
-        Observable<BaseResponse<Object>> moveUrl( String token,int d_id, int url_id);
-
+        Observable<BaseResponse<Object>> moveUrl( String token,int d_id, int url_id,boolean isUpdate);
+        
     }
 }

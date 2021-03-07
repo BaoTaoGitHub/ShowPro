@@ -19,6 +19,9 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.internal.bind.SqlDateTypeAdapter;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * ================================================
  * Created by JessYan on 26/09/2016 13:59
@@ -208,6 +211,23 @@ public final class Preconditions {
             return true;
         }
         ArmsUtils.TopSnackbarText("请输入6-12位的密码");
+        return false;
+    }
+
+    public static boolean checkUrl(String urls){
+        boolean isurl = false;
+        //设置正则表达式
+        String regex = "(((https|http)?://)?([a-z0-9]+[.])|(www.))"
+                + "\\w+[.|\\/]([a-z0-9]{0,})?[[.]([a-z0-9]{0,})]+((/[\\S&&[^,;\u4E00-\u9FA5]]+)+)?([.][a-z0-9]{0,}+|/?)";
+        //对比
+        Pattern pat = Pattern.compile(regex.trim());
+        Matcher mat = pat.matcher(urls.trim());
+        //判断是否匹配
+        isurl = mat.matches();
+        if (isurl) {
+            return true;
+        }
+        ArmsUtils.TopSnackbarText("请输入正确格式的URL");
         return false;
     }
 }

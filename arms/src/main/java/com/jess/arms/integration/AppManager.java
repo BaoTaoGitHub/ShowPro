@@ -26,8 +26,10 @@ import android.view.Gravity;
 import android.view.View;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.jess.arms.base.BaseAppConstants;
 import com.jess.arms.base.delegate.AppLifecycles;
 import com.jess.arms.utils.ArmsUtils;
+import com.jess.arms.utils.DataHelper;
 import com.jess.arms.widget.topsnackbar.TopSnackbar;
 
 import java.util.Arrays;
@@ -524,6 +526,7 @@ public final class AppManager {
      */
     public void appExit() {
         try {
+            DataHelper.removeSF(mApplication, BaseAppConstants.LOGIN_SP);
             killAll();
             android.os.Process.killProcess(android.os.Process.myPid());
             System.exit(0);

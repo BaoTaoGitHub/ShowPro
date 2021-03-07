@@ -27,6 +27,7 @@ import com.jess.arms.http.log.RequestInterceptor;
 import com.jess.arms.integration.IRepositoryManager;
 import com.jess.arms.utils.ArmsUtils;
 import com.jess.arms.utils.DataHelper;
+import com.reptile.show.project.mvp.model.api.Api;
 import com.reptile.show.project.mvp.model.api.service.LoginService;
 import com.reptile.show.project.mvp.model.entity.BaseResponse;
 import com.reptile.show.project.mvp.model.entity.Demo;
@@ -37,10 +38,16 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import me.jessyan.progressmanager.body.ProgressRequestBody;
 import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
+import okhttp3.FormBody;
+import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
+import okio.BufferedSink;
 import retrofit2.Call;
 import timber.log.Timber;
 
@@ -91,10 +98,18 @@ public class GlobalHttpHandlerImpl implements GlobalHttpHandler {
                 BaseResponse<Object> baseResponse = ArmsUtils.obtainAppComponentFromContext(context).gson().fromJson(httpResult, new TypeToken<BaseResponse<Object>>() {
                 }.getType());
                 if ("9".equals(baseResponse.getRet())) {
-
 //                    Request newRequest =  chain.request().newBuilder().header("token", token)
 //                            .build();
 //                    return chain.proceed(newRequest);
+                    LoginEntity entity;
+                    if ((entity = DataHelper.<LoginEntity>getDeviceData(context, AppConstants.LOGIN_SP)) != null) {
+                        FormBody.Builder body = new FormBody.Builder();
+                        body.add("phone", entity.getPhone());
+                        body.add("passwd", entity.getPwd());
+                        Request newRequest = chain.request().newBuilder().url(Api.APP_DOMAIN + "/api/user/login")
+                                .post(body.build()).build();
+                        return chain.proceed(newRequest);
+                    }
                 }
                 Timber.w("接口:" + 1 + "返回Code ------> " + baseResponse.getRet() + "    ||   描述------> " + baseResponse.getDesc());
             } catch (Exception e) {
@@ -130,18 +145,27 @@ public class GlobalHttpHandlerImpl implements GlobalHttpHandler {
         /* 如果需要在请求服务器之前做一些操作, 则重新构建一个做过操作的 Request 并 return, 如增加 Header、Params 等请求信息, 不做操作则直接返回参数 request
         return chain.request().newBuilder().header("token", tokenId)
                               .build(); */
-//        if (DataHelper.getDeviceData(context, AppConstants.LOGIN_SP) != null) {
-//            String token = DataHelper.<LoginEntity>getDeviceData(context, AppConstants.LOGIN_SP).getInfo().getToken();
-//            return chain.request().newBuilder().header("token", token)
+        //TODO 注释暂时
+        if (DataHelper.getDeviceData(context, AppConstants.LOGIN_SP) != null) {
+            String token = DataHelper.<LoginEntity>getDeviceData(context, AppConstants.LOGIN_SP).getToken();
+//            return chain.request().newBuilder().header("Authorization", token)
 //                    .build();
-//        }
+            HttpUrl.Builder builder = chain.request().url().newBuilder();
+            HttpUrl newUrl = builder.addQueryParameter("token", token).build();
+            //利用新的Url 构建新的Request ，并发送给服务器
+            Request newRequest = request.newBuilder()
+                    .url(newUrl)
+                    .build();
+            return newRequest;
+        }
         return request;
     }
 
-    private synchronized String getNewToken(String phone,String pwd) throws IOException{
+    private synchronized String getNewToken(String phone, String pwd) throws IOException {
         String newToken = "";
 //        BaseResponse<LoginEntity> response = mRepositoryManager.obtainRetrofitService(LoginService.class)
 //                .login(phone,pwd);
+
         //同步获取token
         return "";
     }

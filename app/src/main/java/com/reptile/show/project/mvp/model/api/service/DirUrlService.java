@@ -85,7 +85,7 @@ public interface DirUrlService {
      * @return
      */
     @GET("/api/directory/ls")
-    Observable<BaseResponse<DirectoryEntity>> getDirContent(@Query("token") String token, @Query("d_id") int d_id);
+    Observable<DirectoryEntity> getDirContent(@Query("d_id") int d_id);
 
     /**
      * 获取URL内容
@@ -93,9 +93,7 @@ public interface DirUrlService {
      * @param url_id
      * @return
      */
-    @FormUrlEncoded
-    @POST("/api/url/info")
-    Observable<BaseResponse<UrlEntity>> getUrlContent(@Field("token") String token, @Field("url_id")int url_id);
-
+    @GET("/api/url/info")
+    Observable<BaseResponse<UrlEntity>> getUrlContent(@Query("token") String token, @Query("url_id")int url_id);
 
 }

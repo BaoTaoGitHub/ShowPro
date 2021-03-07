@@ -30,6 +30,8 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import me.jessyan.rxerrorhandler.core.RxErrorHandler;
 import me.jessyan.rxerrorhandler.handler.ErrorHandleSubscriber;
@@ -47,6 +49,8 @@ public class HomePresenter extends BasePresenter<HomeContract.Model, HomeContrac
     @Inject
     HomeAdapter mAdapter;
 
+    public int mParent_Id;
+
     @Inject
     public HomePresenter(HomeContract.Model model, HomeContract.View rootView) {
         super(model, rootView);
@@ -54,11 +58,13 @@ public class HomePresenter extends BasePresenter<HomeContract.Model, HomeContrac
 
     /**
      * 获取目录内容
+     *
      * @param d_id 传0为最外层目录
      */
-    public void getDirList(int d_id){
-        LoginEntity entity =  getSP(mRootView.getActivity(),AppConstants.LOGIN_SP);
-        mModel.getDirContent(entity.getToken(),d_id)
+    public void getDirList(int d_id) {
+
+        LoginEntity entity = getSP(mRootView.getActivity(), AppConstants.LOGIN_SP);
+        mModel.getDirContent(entity.getToken(), d_id, true)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(disposable -> {
                     mRootView.showLoading();
@@ -67,14 +73,19 @@ public class HomePresenter extends BasePresenter<HomeContract.Model, HomeContrac
                 .observeOn(AndroidSchedulers.mainThread())
                 .doFinally(() -> {
                     mRootView.hideLoading();
+                    if (mRootView.getRefresh().isRefreshing()) {
+                        mRootView.getRefresh().setRefreshing(false);
+                    }
                 }).compose(RxLifecycleUtils.bindToLifecycle(mRootView))
-                .subscribe(new ErrorHandleSubscriber<BaseResponse<DirectoryEntity>>(mErrorHandler) {
+                .subscribe(new ErrorHandleSubscriber<DirectoryEntity>(mErrorHandler) {
                     @Override
-                    public void onNext(@NonNull BaseResponse<DirectoryEntity> stringBaseResponse) {
+                    public void onNext(@NonNull DirectoryEntity stringBaseResponse) {
                         if (stringBaseResponse.isSuccess()) {
                             mDirUrlList.clear();
                             mDirUrlList.addAll(stringBaseResponse.getInfo().getDirUrl());
                             mAdapter.notifyDataSetChanged();
+                            mParent_Id = d_id;
+                            mRootView.showTitleBack(d_id != 0);
                         } else {
                             mRootView.showMessage(stringBaseResponse.getDesc());
                         }
@@ -82,33 +93,9 @@ public class HomePresenter extends BasePresenter<HomeContract.Model, HomeContrac
                 });
     }
 
-    public void getUrlList(int url_id){
-        LoginEntity entity =  getSP(mRootView.getActivity(),AppConstants.LOGIN_SP);
-        mModel.getUrlContent(entity.getToken(),url_id)
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(disposable -> {
-                    mRootView.showLoading();
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doFinally(() -> {
-                    mRootView.hideLoading();
-                }).compose(RxLifecycleUtils.bindToLifecycle(mRootView))
-                .subscribe(new ErrorHandleSubscriber<BaseResponse<UrlEntity>>(mErrorHandler) {
-                    @Override
-                    public void onNext(@NonNull BaseResponse<UrlEntity> stringBaseResponse) {
-                        if (stringBaseResponse.isSuccess()) {
-                            mRootView.showWebUrl(stringBaseResponse.getInfo().getUrl());
-                        } else {
-                            mRootView.showMessage(stringBaseResponse.getDesc());
-                        }
-                    }
-                });
-    }
-
-    public void createDir(String name,int parentId){
-        LoginEntity entity =  getSP(mRootView.getActivity(),AppConstants.LOGIN_SP);
-        mModel.createDir(entity.getToken(),name,parentId)
+    public void createDir(String name, int parentId) {
+        LoginEntity entity = getSP(mRootView.getActivity(), AppConstants.LOGIN_SP);
+        mModel.createDir(entity.getToken(), name, parentId, true)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(disposable -> {
                     mRootView.showLoading();
@@ -130,33 +117,10 @@ public class HomePresenter extends BasePresenter<HomeContract.Model, HomeContrac
                 });
     }
 
-    public void moveDir(int dId,int parentId){
-        LoginEntity entity =  getSP(mRootView.getActivity(),AppConstants.LOGIN_SP);
-        mModel.moveDir(entity.getToken(),dId,parentId)
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(disposable -> {
-                    mRootView.showLoading();
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doFinally(() -> {
-                    mRootView.hideLoading();
-                }).compose(RxLifecycleUtils.bindToLifecycle(mRootView))
-                .subscribe(new ErrorHandleSubscriber<BaseResponse<Object>>(mErrorHandler) {
-                    @Override
-                    public void onNext(@NonNull BaseResponse<Object> stringBaseResponse) {
-                        if (stringBaseResponse.isSuccess()) {
-                            //TODO
-                        } else {
-                            mRootView.showMessage(stringBaseResponse.getDesc());
-                        }
-                    }
-                });
-    }
 
-    public void renameDir(int dId,String name){
-        LoginEntity entity =  getSP(mRootView.getActivity(),AppConstants.LOGIN_SP);
-        mModel.editDir(entity.getToken(),dId,name)
+    public void renameDir(int dId, String name) {
+        LoginEntity entity = getSP(mRootView.getActivity(), AppConstants.LOGIN_SP);
+        mModel.editDir(entity.getToken(), dId, name, true)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(disposable -> {
                     mRootView.showLoading();
@@ -178,9 +142,33 @@ public class HomePresenter extends BasePresenter<HomeContract.Model, HomeContrac
                 });
     }
 
-    public void removeDir(int dId){
-        LoginEntity entity =  getSP(mRootView.getActivity(),AppConstants.LOGIN_SP);
-        mModel.deleteDir(entity.getToken(),dId)
+    public void removeDir(int dId, int position) {
+        LoginEntity entity = getSP(mRootView.getActivity(), AppConstants.LOGIN_SP);
+        mModel.deleteDir(entity.getToken(), dId, true)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(disposable -> {
+                    mRootView.showLoading();
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doFinally(() -> {
+                    mRootView.hideLoading();
+                }).compose(RxLifecycleUtils.bindToLifecycle(mRootView))
+                .subscribe(new ErrorHandleSubscriber<BaseResponse<Object>>(mErrorHandler) {
+                    @Override
+                    public void onNext(@NonNull BaseResponse<Object> stringBaseResponse) {
+                        if (stringBaseResponse.isSuccess()) {
+                            mAdapter.notifyItemRemoved(position);
+                        } else {
+                            mRootView.showMessage(stringBaseResponse.getDesc());
+                        }
+                    }
+                });
+    }
+
+    public void createUrl(int dId, String url) {
+        LoginEntity entity = getSP(mRootView.getActivity(), AppConstants.LOGIN_SP);
+        mModel.createUrl(entity.getToken(), dId, url, true)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(disposable -> {
                     mRootView.showLoading();
@@ -195,6 +183,104 @@ public class HomePresenter extends BasePresenter<HomeContract.Model, HomeContrac
                     public void onNext(@NonNull BaseResponse<Object> stringBaseResponse) {
                         if (stringBaseResponse.isSuccess()) {
                             mAdapter.notifyDataSetChanged();
+                        } else {
+                            mRootView.showMessage(stringBaseResponse.getDesc());
+                        }
+                    }
+                });
+    }
+
+    public void getUrlContent(int url_id) {
+        LoginEntity entity = getSP(mRootView.getActivity(), AppConstants.LOGIN_SP);
+        mModel.getUrlContent(entity.getToken(), url_id, true)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(disposable -> {
+                    mRootView.showLoading();
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doFinally(() -> {
+                    mRootView.hideLoading();
+                }).compose(RxLifecycleUtils.bindToLifecycle(mRootView))
+                .subscribe(new ErrorHandleSubscriber<BaseResponse<UrlEntity>>(mErrorHandler) {
+                    @Override
+                    public void onNext(@NonNull BaseResponse<UrlEntity> stringBaseResponse) {
+                        if (stringBaseResponse.isSuccess()) {
+                            mRootView.showWebUrl(stringBaseResponse.getInfo().getUrl());
+                        } else {
+                            mRootView.showMessage(stringBaseResponse.getDesc());
+                        }
+                    }
+                });
+    }
+
+    //TODO 暂时没有接口
+    public void renameUrl(int dId, String url) {
+//        LoginEntity entity = getSP(mRootView.getActivity(), AppConstants.LOGIN_SP);
+//        mModel.(entity.getToken(), dId,url,true)
+//                .subscribeOn(Schedulers.io())
+//                .doOnSubscribe(disposable -> {
+//                    mRootView.showLoading();
+//                })
+//                .subscribeOn(AndroidSchedulers.mainThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .doFinally(() -> {
+//                    mRootView.hideLoading();
+//                }).compose(RxLifecycleUtils.bindToLifecycle(mRootView))
+//                .subscribe(new ErrorHandleSubscriber<BaseResponse<Object>>(mErrorHandler) {
+//                    @Override
+//                    public void onNext(@NonNull BaseResponse<Object> stringBaseResponse) {
+//                        if (stringBaseResponse.isSuccess()) {
+//                            mAdapter.notifyDataSetChanged();
+//                        } else {
+//                            mRootView.showMessage(stringBaseResponse.getDesc());
+//                        }
+//                    }
+//                });
+    }
+
+    //TODO 暂时没有接口
+    public void removeUrl(int dId, String url) {
+//        LoginEntity entity = getSP(mRootView.getActivity(), AppConstants.LOGIN_SP);
+//        mModel.createUrl(entity.getToken(), dId,url,true)
+//                .subscribeOn(Schedulers.io())
+//                .doOnSubscribe(disposable -> {
+//                    mRootView.showLoading();
+//                })
+//                .subscribeOn(AndroidSchedulers.mainThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .doFinally(() -> {
+//                    mRootView.hideLoading();
+//                }).compose(RxLifecycleUtils.bindToLifecycle(mRootView))
+//                .subscribe(new ErrorHandleSubscriber<BaseResponse<Object>>(mErrorHandler) {
+//                    @Override
+//                    public void onNext(@NonNull BaseResponse<Object> stringBaseResponse) {
+//                        if (stringBaseResponse.isSuccess()) {
+//                            mAdapter.notifyDataSetChanged();
+//                        } else {
+//                            mRootView.showMessage(stringBaseResponse.getDesc());
+//                        }
+//                    }
+//                });
+    }
+
+    public void moveUrl(int dId, int url_id) {
+        LoginEntity entity = getSP(mRootView.getActivity(), AppConstants.LOGIN_SP);
+        mModel.moveUrl(entity.getToken(), dId, url_id, true)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(disposable -> {
+                    mRootView.showLoading();
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doFinally(() -> {
+                    mRootView.hideLoading();
+                }).compose(RxLifecycleUtils.bindToLifecycle(mRootView))
+                .subscribe(new ErrorHandleSubscriber<BaseResponse<Object>>(mErrorHandler) {
+                    @Override
+                    public void onNext(@NonNull BaseResponse<Object> stringBaseResponse) {
+                        if (stringBaseResponse.isSuccess()) {
+
                         } else {
                             mRootView.showMessage(stringBaseResponse.getDesc());
                         }

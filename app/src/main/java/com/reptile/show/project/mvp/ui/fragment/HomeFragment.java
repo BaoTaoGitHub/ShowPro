@@ -1,20 +1,15 @@
 package com.reptile.show.project.mvp.ui.fragment;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.jess.arms.base.BaseFragment;
 import com.jess.arms.base.DefaultAdapter;
@@ -29,6 +25,7 @@ import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.utils.ArmsUtils;
 import com.jess.arms.utils.DeviceUtils;
 import com.jess.arms.utils.LogUtils;
+import com.jess.arms.utils.MyAlertDialog;
 import com.jess.arms.utils.MyDialog;
 import com.jess.arms.utils.Preconditions;
 import com.jess.arms.utils.ProgressDialogUtils;
@@ -37,18 +34,22 @@ import com.jess.arms.widget.smartpopupwindow.SmartPopupWindow;
 import com.jess.arms.widget.smartpopupwindow.VerticalPosition;
 import com.reptile.show.project.R;
 import com.reptile.show.project.app.AppConstants;
+import com.reptile.show.project.app.EventBusTags;
 import com.reptile.show.project.di.component.DaggerHomeComponent;
 import com.reptile.show.project.mvp.contract.HomeContract;
+import com.reptile.show.project.mvp.model.entity.BaseEventEntity;
 import com.reptile.show.project.mvp.model.entity.DirectoryEntity;
-import com.reptile.show.project.mvp.model.entity.FolderEntity;
 import com.reptile.show.project.mvp.presenter.HomePresenter;
 import com.reptile.show.project.mvp.ui.activity.MainActivity;
+import com.reptile.show.project.mvp.ui.activity.MoveDirActivity;
 import com.reptile.show.project.mvp.ui.activity.SearchActivity;
 import com.reptile.show.project.mvp.ui.activity.UrlActivity;
 import com.reptile.show.project.mvp.ui.adapter.HomeAdapter;
 
+import org.simple.eventbus.Subscriber;
+import org.simple.eventbus.ThreadMode;
+
 import java.util.HashSet;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -58,7 +59,7 @@ import butterknife.OnClick;
 
 public class HomeFragment extends BaseFragment<HomePresenter> implements HomeContract.View
         , DefaultAdapter.OnRecyclerViewItemClickListener
-        , DefaultAdapter.onRecycleViewItemLongClickLisrtener {
+        , DefaultAdapter.onRecycleViewItemLongClickLisrtener, SwipeRefreshLayout.OnRefreshListener {
     @BindView(R.id.linear_home)
     LinearLayout mLinear_home;
     @BindView(R.id.toolbar_title)
@@ -69,11 +70,14 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
     RecyclerView mRecycle_list;
     @BindView(R.id.ll_search)
     LinearLayout mLl_search;
+    @BindView(R.id.srl_refresh)
+    SwipeRefreshLayout mSrl_refresh;
 
     @BindString(R.string.toolbar_menu_new_folder)
     String mNewFolder;
     @BindString(R.string.rename)
     String mRename;
+
     static TextView mTv_popup_title;
 
     @Inject
@@ -81,6 +85,8 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
     @Inject
     RecyclerView.LayoutManager mLayoutManager;
 
+    //记录跳转的数量
+    private int jumpNum;
     //是否开启多选模式
     private boolean isMultipleEnable = false;
     //是否是长按 选择模式
@@ -110,8 +116,21 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
 
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
+        iniToolbar();
+        iniRefresh();
         iniRecyclerView();
         mTv_title.setText(ArmsUtils.getString(getActivity(), R.string.bottom_main));
+        mPresenter.getDirList(0);
+    }
+
+    private void iniRefresh() {
+        mSrl_refresh.setOnRefreshListener(this);
+    }
+
+    private void iniToolbar() {
+        mToolbar_title.setNavigationOnClickListener(v -> {
+            mPresenter.getDirList(0);
+        });
         mToolbar_title.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -120,7 +139,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
                     case R.id.menu_batch_editor:
                         return true;
                     case R.id.menu_new_folder:
-                        iniEditDialog(true, 0);
+                        iniEditDialog(1,true, 0);
                         return true;
                     case R.id.menu_sort_modify_time:
                         item.setChecked(!item.isChecked());
@@ -135,7 +154,6 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
                 return false;
             }
         });
-        mPresenter.getDirList(0);
     }
 
     private void iniRecyclerView() {
@@ -179,10 +197,15 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
 
     @Override
     public void killMyself() {
+        ((MainActivity) getActivity()).killMyself();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         isCheckModel = null;
         mChoice = null;
         mTv_popup_title = null;
-        ((MainActivity) getActivity()).killMyself();
     }
 
     /**
@@ -190,7 +213,15 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
      */
     @OnClick(R.id.ll_search)
     public void onLinearSearchClick() {
-        launchActivity(new Intent(getActivity(), SearchActivity.class));
+        showMessage("暂未开放");
+        //TODO 暂时隐藏，没有接口
+//        launchActivity(new Intent(getActivity(), SearchActivity.class));
+    }
+
+    @Subscriber(tag = EventBusTags.Main2Home,mode = ThreadMode.MAIN)
+    public void onMain2HomeEvent(BaseEventEntity<String> eventEntity){
+        //TODO 暂时创建URL到第一层目录
+        iniEditDialog(3,true,0);
     }
 
     /**
@@ -203,15 +234,15 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
      */
     @Override
     public void onItemClick(@NonNull View view, int viewType, @NonNull Object data, int position) {
-        if (isMultipleEnable&&isCheckModel) {
+        if (isMultipleEnable && isCheckModel) {
             RelativeLayout mRl_folder = (RelativeLayout) view.findViewById(R.id.rl_folder);
             mRl_folder.setActivated(!mRl_folder.isActivated());
             if (data instanceof DirectoryEntity.DirUrlBean) {
                 DirectoryEntity.DirUrlBean entity = ((DirectoryEntity.DirUrlBean) data);
                 entity.setCheck(!mRl_folder.isActivated());
-                if(mRl_folder.isActivated()){
+                if (mRl_folder.isActivated()) {
                     mChoice.add(entity);
-                }else {
+                } else {
                     mChoice.remove(entity);
                 }
                 mTv_popup_title.setText("已选择" + mChoice.size() + "个文件");
@@ -223,7 +254,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
                 if (viewType == AppConstants.HomeAdapterViewType.TYPE_DIR) {
                     mPresenter.getDirList(entity.getId());
                 } else {
-                    mPresenter.getUrlList(entity.getId());
+                    mPresenter.getUrlContent(entity.getId());
                 }
             }
         }
@@ -235,7 +266,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
         if (!isMultipleEnable) {
             if (data instanceof DirectoryEntity.DirUrlBean) {
                 boolean isDir = ((DirectoryEntity.DirUrlBean) data).getViewType() == AppConstants.HomeAdapterViewType.TYPE_DIR;
-                iniOnLongMenuDialog(isDir,((DirectoryEntity.DirUrlBean) data).getId());
+                iniOnLongMenuDialog(isDir, ((DirectoryEntity.DirUrlBean) data).getId(),position);
             }
 
         } else {
@@ -253,7 +284,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
                 mChoice.add(entity);
                 RelativeLayout mRl_folder = (RelativeLayout) view.findViewById(R.id.rl_folder);
                 mRl_folder.setActivated(!mRl_folder.isActivated());
-                iniChoiceLayout();
+                iniChoiceLayout(position);
                 notifyChangeChoiceBottom();
             }
         }
@@ -266,53 +297,95 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
         launchActivity(intent);
     }
 
-    private void iniOnLongMenuDialog(boolean isDir,int id){
+    private void iniOnLongMenuDialog(boolean isDir, int id,int position) {
         View layout = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_single_menu, null, false);
-        MyDialog myDialog = new MyDialog(getActivity(), layout, MyDialog.LocationView.CENTER);
-        myDialog.setCancelable(true);
-        myDialog.setCanceledOnTouchOutside(true);
+        MyAlertDialog myAlertDialog = new MyAlertDialog(getActivity(), layout);
         View.OnClickListener listener = view -> {
-          switch (view.getId()){
-              case R.id.rl_new_folder:
-                  iniEditDialog(true,id);
-                  break;
-              case R.id.rl_rename:
-                  iniEditDialog(false,id);
-                  break;
-              case R.id.rl_delete:
-                  mPresenter.removeDir(id);
-                  break;
-              case R.id.rl_move:
-
-                  break;
-          }
+            myAlertDialog.dismiss();
+            switch (view.getId()) {
+                case R.id.rl_new_folder:
+                    iniEditDialog(1,isDir, id);
+                    break;
+                case R.id.rl_rename:
+                    iniEditDialog(2,isDir, id);
+                    break;
+                case R.id.rl_delete:
+                    if(isDir){
+                        mPresenter.removeDir(id,position);
+                    }else {
+                        showMessage("暂未开放");
+                    }
+                    break;
+                case R.id.rl_move:
+                    Intent intent = new Intent(getActivity(), MoveDirActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(AppConstants.INTENT_KEY_HOME2MOVE_ISDIR,isDir+"");
+                    bundle.putInt(AppConstants.INTENT_KEY_HOME2MOVE_ID,id);
+                    intent.putExtras(bundle);
+                    launchActivity(intent);
+                    break;
+            }
         };
+        RelativeLayout mRename = layout.findViewById(R.id.rl_rename);
+        RelativeLayout mDelete = layout.findViewById(R.id.rl_delete);
+        RelativeLayout mMove = layout.findViewById(R.id.rl_move);
         RelativeLayout mNew = layout.findViewById(R.id.rl_new_folder);
+        mRename.setOnClickListener(listener);
         mNew.setOnClickListener(listener);
-        layout.findViewById(R.id.rl_rename).setOnClickListener(listener);
-        layout.findViewById(R.id.rl_delete).setOnClickListener(listener);
-        layout.findViewById(R.id.rl_move).setOnClickListener(listener);
-        if(!isDir){
+        mDelete.setOnClickListener(listener);
+        mMove.setOnClickListener(listener);
+        if (!isDir) {
             mNew.setVisibility(View.GONE);
+            mRename.setVisibility(View.GONE);
+            mDelete.setVisibility(View.GONE);
         }
-        myDialog.show();
+        myAlertDialog.setBackgroundDrawable(R.drawable.shape_all_round_white);
+        myAlertDialog.show();
     }
-    private void iniEditDialog(boolean isNewFolder, int parentId) {
+
+    private void iniEditDialog(int type,boolean isDir, int parentId) {
+        String titleName;
         View layout = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_edittext_cancel_ok, null, false);
         TextView mTv_dialog_title = layout.findViewById(R.id.tv_dialog_title);
         EditText mContent = layout.findViewById(R.id.et_dialog_content);
-        mTv_dialog_title.setText(isNewFolder ? mNewFolder : mRename);
+        switch (type){
+            case 1:
+                titleName = mNewFolder;
+                break;
+            case 2:
+                titleName = mRename;
+                break;
+            case 3:
+                titleName = "链接收藏";
+                break;
+            default:
+                titleName = "";
+        }
+        mTv_dialog_title.setText(titleName);
         MyDialog myDialog = new MyDialog(getActivity(), layout, MyDialog.LocationView.CENTER);
         Button mOk = layout.findViewById(R.id.bt_dialog_ok);
         Button mCancel = layout.findViewById(R.id.bt_dialog_cancel);
         mOk.setOnClickListener(v -> {
             String input = mContent.getText().toString();
             if (Preconditions.checkString(input)) {
-                if (isNewFolder) {
-                    mPresenter.createDir(input, parentId);
-                } else {
-                    mPresenter.renameDir(parentId, input);
+                switch (type){
+                    case 1:
+                        mPresenter.createDir(input, parentId);
+                        break;
+                    case 2:
+                        if(isDir){
+                            mPresenter.renameDir(parentId, input);
+                        }else {
+                            //TODO 重命名URL
+                        }
+                        break;
+                    case 3:
+                        if(Preconditions.checkUrl(input)){
+                            mPresenter.createUrl(parentId,input);
+                        }
+                        break;
                 }
+                myDialog.dismiss();
             }
         });
         mCancel.setOnClickListener(v -> {
@@ -325,7 +398,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
     private RadioButton rb_popup_rename;
     private RadioButton rb_popup_move;
     private RadioButton rb_popup_new_folder;
-    private void iniChoiceLayout() {
+    private void iniChoiceLayout(int position) {
         //Top
         View top_view = LayoutInflater.from(getActivity()).inflate(R.layout.popup_top_title, null);
         SmartPopupWindow topPopupWindow = SmartPopupWindow.Builder.build(getActivity(), top_view)
@@ -356,7 +429,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
                 case R.id.rb_popup_new_folder:
                     if (mChoice.iterator().hasNext()) {
                         int dirId = mChoice.iterator().next().getId();
-                        iniEditDialog(true, dirId);
+                        iniEditDialog(1,true, dirId);
                     }
                     break;
                 case R.id.rb_popup_move:
@@ -365,11 +438,12 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
                 case R.id.rb_popup_rename:
                     if (mChoice.iterator().hasNext()) {
                         int dirId = mChoice.iterator().next().getId();
-                        iniEditDialog(false, dirId);
+                        iniEditDialog(2,true, dirId);
                     }
                     break;
                 case R.id.rb_popup_remove:
-                    showMessage("点击删除");
+                    int dirId = mChoice.iterator().next().getId();
+                    mPresenter.removeDir(dirId,position);
                     break;
             }
         };
@@ -418,5 +492,24 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
             }
 
         }
+    }
+
+    @Override
+    public void showTitleBack(boolean canBack) {
+        if (canBack) {
+            mToolbar_title.setNavigationIcon(R.mipmap.ico_title_back);
+        } else {
+            mToolbar_title.setNavigationIcon(null);
+        }
+    }
+
+    @Override
+    public SwipeRefreshLayout getRefresh() {
+        return mSrl_refresh;
+    }
+
+    @Override
+    public void onRefresh() {
+        mPresenter.getDirList(mPresenter.mParent_Id);
     }
 }

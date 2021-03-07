@@ -73,11 +73,11 @@ public class UrlActivity extends BaseActivity<UrlPresenter> implements UrlContra
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
         iniWebView();
-
+        getIntentBundle();
     }
 
     private void getIntentBundle() {
-        String url = new Intent().getStringExtra("u");
+        String url = getIntent().getStringExtra("u");
         if (Preconditions.checkString(url)) {
             mWv_web.loadUrl(url);
         } else

@@ -22,11 +22,16 @@
         android:id="@+id/tv_title_center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/tv_title_left"
+        app:layout_constraintRight_toLeftOf="@+id/tv_title_right"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         style="@style/AppTheme.TitleTextStyle"
+        android:layout_marginRight="@dimen/dimen_20_dp"
+        android:layout_marginLeft="@dimen/dimen_20_dp"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:padding="@dimen/dimen_5_dp"
         />
     <TextView

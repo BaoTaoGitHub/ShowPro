@@ -28,5 +28,5 @@ package com.reptile.show.project.app;
  * ================================================
  */
 public interface EventBusTags {
-
+    String Main2Home = "main2home_";
 }

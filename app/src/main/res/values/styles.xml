@@ -41,6 +41,7 @@
         <item name="titleTextAppearance">@style/AppTheme.ToolbarTitleTextStyle</item>
         <item name="showAsAction">never</item><!--设置菜单的显示方式 never 不在toolbar中显示，一直在溢出菜单显示-->
         <item name="elevation">@dimen/dimen_0_5_dp</item>
+
     </style>
 
     <!--定义ToolBar上Title的文字样式-->

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="DialogNormalStyle" parent="android:Theme.Dialog">
+    <style name="DialogNormalStyle">
         <!--<item name="android:windowAnimationStyle">@style/AnimBottom</item>-->
         <item name="android:windowFrame">@null</item>
         <!-- 边框 -->
@@ -15,4 +15,5 @@
         <item name="android:backgroundDimEnabled">true</item>
         <!-- 模糊 -->
     </style>
+
 </resources>

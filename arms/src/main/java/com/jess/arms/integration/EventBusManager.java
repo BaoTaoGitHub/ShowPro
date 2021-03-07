@@ -19,6 +19,8 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.lang.reflect.Method;
 
+import io.reactivex.internal.util.ExceptionHelper;
+
 import static com.jess.arms.base.Platform.DEPENDENCY_ANDROID_EVENTBUS;
 import static com.jess.arms.base.Platform.DEPENDENCY_EVENTBUS;
 
@@ -97,6 +99,19 @@ public final class EventBusManager {
     }
 
     /**
+     * 发送Tag标签事件
+     * @param event
+     * @param tag
+     */
+    public void post(Object event,String tag){
+        if (DEPENDENCY_ANDROID_EVENTBUS) {
+            org.simple.eventbus.EventBus.getDefault().post(event,tag);
+        } else if (DEPENDENCY_EVENTBUS) {
+            throw new IllegalStateException("org.greenrobot.eventbus.EventBus not support post(Object event,String tag) method");
+        }
+    }
+
+    /**
      * 发送黏性事件, 如果您在项目中同时依赖了两个 EventBus, 请自己使用想使用的 EventBus 的 Api 发送黏性事件
      *
      * @param event 事件
@@ -106,6 +121,19 @@ public final class EventBusManager {
             org.simple.eventbus.EventBus.getDefault().postSticky(event);
         } else if (DEPENDENCY_EVENTBUS) {
             org.greenrobot.eventbus.EventBus.getDefault().postSticky(event);
+        }
+    }
+
+    /**
+     * 发送标签黏性事件, 如果您在项目中同时依赖了两个 EventBus, 请自己使用想使用的 EventBus 的 Api 发送黏性事件
+     *
+     * @param event 事件
+     */
+    public void postSticky(Object event,String tag) {
+        if (DEPENDENCY_ANDROID_EVENTBUS) {
+            org.simple.eventbus.EventBus.getDefault().postSticky(event,tag);
+        } else if (DEPENDENCY_EVENTBUS) {
+            throw new IllegalStateException("org.greenrobot.eventbus.EventBus not support post(Object event,String tag) method");
         }
     }
 

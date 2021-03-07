@@ -6,7 +6,7 @@ import com.reptile.show.project.app.AppConstants;
 
 import java.util.List;
 
-public class DirectoryEntity {
+public class DirectoryEntity extends BaseResponse<DirectoryEntity>{
 
     private List<DirUrlBean> dirUrl;
     private List<DirectoryBean> directory;
@@ -46,6 +46,15 @@ public class DirectoryEntity {
         private Integer d_id;
         private String name;
         private Integer count;
+        private Integer parent_id;
+
+        public Integer getParent_id() {
+            return parent_id;
+        }
+
+        public void setParent_id(Integer parent_id) {
+            this.parent_id = parent_id;
+        }
 
         public Integer getD_id() {
             return d_id;
@@ -86,6 +95,15 @@ public class DirectoryEntity {
         private String url_content;
         private Integer status;
         private String init_time;
+        private Integer parent_id;
+
+        public Integer getParent_id() {
+            return parent_id;
+        }
+
+        public void setParent_id(Integer parent_id) {
+            this.parent_id = parent_id;
+        }
 
         public Integer getUrl_id() {
             return url_id;
@@ -133,12 +151,22 @@ public class DirectoryEntity {
         private Integer id;
         private String title;
         private boolean isCheck;
+        private Integer parent_id;
+
 
         private int childCount;
 
         private String content;
         private Integer status;
         private String init_time;
+
+        public Integer getParent_id() {
+            return parent_id;
+        }
+
+        public void setParent_id(Integer parent_id) {
+            this.parent_id = parent_id;
+        }
 
         public boolean isCheck() {
             return isCheck;

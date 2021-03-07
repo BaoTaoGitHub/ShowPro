@@ -34,6 +34,7 @@ import com.jess.arms.integration.cache.CacheType;
 import com.jess.arms.integration.lifecycle.ActivityLifecycleable;
 import com.jess.arms.mvp.IPresenter;
 import com.jess.arms.utils.ArmsUtils;
+import com.jess.arms.utils.DataHelper;
 import com.jess.arms.utils.ProgressDialogUtils;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 

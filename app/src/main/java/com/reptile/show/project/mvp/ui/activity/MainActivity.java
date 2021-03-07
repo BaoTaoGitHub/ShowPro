@@ -25,16 +25,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
+import com.jess.arms.integration.EventBusManager;
 import com.jess.arms.utils.ArmsUtils;
 import com.jess.arms.utils.DataHelper;
 import com.jess.arms.utils.FragmentUtils;
+import com.jess.arms.utils.LogUtils;
 import com.jess.arms.widget.smartpopupwindow.HorizontalPosition;
 import com.jess.arms.widget.smartpopupwindow.SmartPopupWindow;
 import com.jess.arms.widget.smartpopupwindow.VerticalPosition;
 import com.reptile.show.project.R;
 import com.reptile.show.project.app.AppConstants;
+import com.reptile.show.project.app.EventBusTags;
 import com.reptile.show.project.di.component.DaggerMainComponent;
 import com.reptile.show.project.mvp.contract.MainContract;
+import com.reptile.show.project.mvp.model.entity.BaseEventEntity;
 import com.reptile.show.project.mvp.model.entity.PopupAddEntity;
 import com.reptile.show.project.mvp.presenter.MainPresenter;
 import com.reptile.show.project.mvp.ui.adapter.PopupAddAdapter;
@@ -73,7 +77,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     private double firstTime = 0;
 
     private final int[] mDrawables = new int[]{R.mipmap.ico_popup_add_links, R.mipmap.ico_popup_add_new};
-    private final String[] mDrawableNames = new String[]{"链接收藏", "新建笔记"};
+    private final String[] mDrawableNames = new String[]{"链接收藏", "新建笔记(暂未开放)"};
     static SmartPopupWindow bottomPopupWindow;
 
     @Override
@@ -210,7 +214,8 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DataHelper.clearShareprefrence(getActivity());
+        LogUtils.debugInfo("==MainActivityOnDestroy==","进入");
+        DataHelper.removeSF(getActivity(),AppConstants.LOGIN_SP);
         this.rxPermissions = null;
         this.mFragments = null;
         this.bottomPopupWindow = null;
@@ -238,6 +243,19 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
             mTv_popup_cancel.setOnClickListener(view -> {
                 if (bottomPopupWindow.isShowing()) {
                     bottomPopupWindow.dismiss();
+                }
+            });
+            pAdapter.setOnItemClickListener((View view, int viewType, @NonNull Object data, int position) -> {
+                switch (position) {
+                    case 0:
+                        //链接收藏
+                        bottomPopupWindow.dismiss();
+                        EventBusManager.getInstance().post(new BaseEventEntity<String>("1"), EventBusTags.Main2Home);
+                        break;
+                    case 1:
+                        //新建笔记
+                        showMessage("暂未开放");
+                        break;
                 }
             });
         }

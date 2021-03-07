@@ -27,13 +27,22 @@ import com.jess.arms.http.imageloader.glide.GlideImageLoaderStrategy;
 import com.jess.arms.http.log.RequestInterceptor;
 import com.jess.arms.integration.ConfigModule;
 //import com.reptile.show.project.BuildConfig;
+import com.jess.arms.integration.cache.CacheType;
+import com.jess.arms.integration.cache.IntelligentCache;
+import com.jess.arms.integration.cache.LruCache;
 import com.reptile.show.project.mvp.model.api.Api;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import me.jessyan.progressmanager.ProgressManager;
 import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
+import okhttp3.Cache;
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * ================================================
@@ -173,4 +182,5 @@ public final class GlobalConfiguration implements ConfigModule {
         //可以根据不同的逻辑添加多个实现类
         lifecycles.add(new FragmentLifecycleCallbacksImpl());
     }
+
 }

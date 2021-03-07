@@ -15,7 +15,11 @@
  */
 package com.reptile.show.project.mvp.model.api.cache;
 
+import com.reptile.show.project.mvp.model.entity.BaseResponse;
 import com.reptile.show.project.mvp.model.entity.Demo;
+import com.reptile.show.project.mvp.model.entity.DirectoryEntity;
+import com.reptile.show.project.mvp.model.entity.LoginEntity;
+import com.reptile.show.project.mvp.model.entity.UrlEntity;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +41,41 @@ import io.rx_cache2.internal.RxCache;
  * ================================================
  */
 public interface CommonCache {
-
+    /**
+     * LifeCache设置缓存过期时间. 如果没有设置@LifeCache , 数据将被永久缓存理除非你使用了 EvictProvider,EvictDynamicKey or EvictDynamicKeyGroup .
+     * @param
+     * @param idLastUserQueried 驱逐与一个特定的键使用EvictDynamicKey相关的数据。比如分页，排序或筛选要求
+     * @param evictProvider  可以明确地清理指定的数据 DynamicKey.
+     * @return
+     */
     @LifeCache(duration = 2, timeUnit = TimeUnit.MINUTES)
     Observable<Reply<List<Demo>>> getUsers(Observable<List<Demo>> users, DynamicKey idLastUserQueried, EvictProvider evictProvider);
+
+    //获取目录
+    @LifeCache(duration = 1, timeUnit = TimeUnit.SECONDS)
+    Observable<Reply<DirectoryEntity>> getDirContent(Observable<DirectoryEntity> dirEntity,DynamicKey dynamicKey,EvictProvider evictProvider);
+
+    //获取URL内容
+    @LifeCache(duration = 2, timeUnit = TimeUnit.MINUTES)
+    Observable<BaseResponse<UrlEntity>> getUrlContent(String token, int url_id,EvictProvider evictProvider);
+
+    //创建目录
+    @LifeCache(duration = 2, timeUnit = TimeUnit.MINUTES)
+    Observable<BaseResponse<Object>> createDir(String token, String name, int parent_id,EvictProvider evictProvider);
+
+    //删除目录
+    @LifeCache(duration = 2, timeUnit = TimeUnit.MINUTES)
+    Observable<BaseResponse<Object>> deleteDir(String token, int d_id,EvictProvider evictProvider);
+
+    //修改目录
+    @LifeCache(duration = 2, timeUnit = TimeUnit.MINUTES)
+    Observable<BaseResponse<Object>> editDir(String token, int d_id, String name,EvictProvider evictProvider);
+
+    //移动目录
+    @LifeCache(duration = 2, timeUnit = TimeUnit.MINUTES)
+    Observable<BaseResponse<Object>> moveDir(String token, int d_id, int parent_id,EvictProvider evictProvider);
+
+    //移动URL
+    @LifeCache(duration = 2, timeUnit = TimeUnit.MINUTES)
+    Observable<BaseResponse<Object>> moveUrl(String token, int d_id, int url_id,EvictProvider evictProvider);
 }
