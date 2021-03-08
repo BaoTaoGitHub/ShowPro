@@ -129,7 +129,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
 
     private void iniToolbar() {
         mToolbar_title.setNavigationOnClickListener(v -> {
-            mPresenter.getDirList(0);
+            mPresenter.getDirList(mPresenter.mParent_Id);
         });
         mToolbar_title.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -221,7 +221,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
     @Subscriber(tag = EventBusTags.Main2Home,mode = ThreadMode.MAIN)
     public void onMain2HomeEvent(BaseEventEntity<String> eventEntity){
         //TODO 暂时创建URL到第一层目录
-        iniEditDialog(3,true,0);
+        iniEditDialog(3,true,mPresenter.mParent_Id);
     }
 
     /**

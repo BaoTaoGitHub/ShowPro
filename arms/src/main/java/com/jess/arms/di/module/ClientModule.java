@@ -129,6 +129,8 @@ public abstract class ClientModule {
         if (configuration != null) {
             configuration.configOkhttp(application, builder);
         }
+        //TODO 测试
+        builder.cache(null);
         return builder.build();
     }
 

@@ -93,8 +93,8 @@ public class MineFragment extends BaseFragment<MinePresenter> implements MineCon
     public void onClick(View v){
         switch (v.getId()){
             case R.id.bt_logout:
-                ArmsUtils.exitApp();
                 launchActivity(new Intent(getActivity(), LoginActivity.class));
+                ArmsUtils.killAll();
                 break;
         }
     }

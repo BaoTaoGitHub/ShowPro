@@ -28,9 +28,10 @@ android {
 
         release {
             buildConfigField "boolean", "LOG_DEBUG", "false"
-            minifyEnabled true
-            shrinkResources true
-            zipAlignEnabled true
+            //打包时打开混淆闪退，不知原因
+            minifyEnabled false
+//            shrinkResources false
+//            zipAlignEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

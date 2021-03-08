@@ -84,7 +84,11 @@ public class HomePresenter extends BasePresenter<HomeContract.Model, HomeContrac
                             mDirUrlList.clear();
                             mDirUrlList.addAll(stringBaseResponse.getInfo().getDirUrl());
                             mAdapter.notifyDataSetChanged();
-                            mParent_Id = d_id;
+                            if(stringBaseResponse.getDirUrl()!=null&&stringBaseResponse.getDirUrl().size()>0){
+                                mParent_Id = stringBaseResponse.getDirUrl().get(0).getParent_id();
+                            }else{
+                                mParent_Id = 0;
+                            }
                             mRootView.showTitleBack(d_id != 0);
                         } else {
                             mRootView.showMessage(stringBaseResponse.getDesc());

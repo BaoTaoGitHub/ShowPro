@@ -118,6 +118,7 @@
         app:layout_constraintBottom_toTopOf="@+id/view_actionbar_line"
         android:padding="@dimen/dimen_5_dp"
         android:layout_marginRight="@dimen/dimen_46_5_dp"
+        android:visibility="gone"
         />
     <ImageButton
         android:id="@+id/ib_settings"
@@ -130,6 +131,7 @@
         android:src="@mipmap/ico_settings"
         android:background="@null"
         android:layout_marginRight="@dimen/dimen_10_dp"
+        android:visibility="gone"
         />
     <View
         android:id="@+id/view_actionbar_line"

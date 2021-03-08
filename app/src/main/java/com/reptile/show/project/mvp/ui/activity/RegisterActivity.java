@@ -39,8 +39,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 import io.reactivex.internal.operators.completable.CompletableSubscribeOn;
-import kotlin.contracts.Returns;
-import kotlin.jvm.functions.Function1;
 
 @ActivityScope
 public class RegisterActivity extends BaseActivity<LoginPresenter> implements LoginContract.View {
